@@ -1,0 +1,22 @@
+{% load static %}
+<h1>Music App</h1>
+{% regroup songs by id as songlist %}
+{% for i in songlist %}
+<p>{{i.list.0.title}}</p>
+{% for j in i.list %}
+<p>{{j.tags__name}}</p>
+{% endfor %}
+
+
+<!-- <audio controls>
+    <source src="{% get_static_prefix %}{{i.title}}.mp3" type="audio/mp3">
+  Your browser does not support the audio element.
+  </audio> -->
+  <form method="POST" action="{% url 'musicapp:addtag' %}">
+        {% csrf_token %}
+      Add a tag:
+      Name:<input type='text' name='tagname'>
+      <input type='hidden' name='songid' value='{{i.list.0.id}}'>
+      <input type='submit' value='ADD TAG'>
+  </form>
+  {% endfor %}
