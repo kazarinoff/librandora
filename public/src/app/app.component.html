@@ -1,0 +1,24 @@
+<body>
+<h1>Play the radio</h1>
+
+<div>
+  <p id='title'>Track: {{song.title}}</p>
+  <p id='artist'>Artist: {{song.artist}}</p>
+  <p id='album'>Album: {{song.album}}</p>
+  <p id='genre'>Genre: {{song.genre}}</p>
+  <p id='rating'>Rating: {{song.rating}}</p>
+
+  <form (ngSubmit)='editsong()'>
+    Rating:<input [(ngModel)]="song.rating" type='number' name='rating'>  
+    <input type='submit' value='RATE'>
+  </form>
+</div>
+<div>
+  <button (click)="randomtrack()" id='next'>RANDOM TRACK</button>  
+  <button (click)="pauseaudio()" id='pause'>Start/Stop Music</button>
+
+</div>
+<router-outlet></router-outlet>
+</body>
+
+

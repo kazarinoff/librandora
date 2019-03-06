@@ -21,23 +21,7 @@ venv/
 ENV/
 /node_modules
 
-Skip to content
- 
-Search or jump to…
-
-Pull requests
-Issues
-Marketplace
-Explore
- @kazarinoff Sign out
-10
-118 63 codingforentrepreneurs/Angular-Django
- Code  Issues 0  Pull requests 0  Projects 0  Wiki  Insights
-Angular-Django/.gitignore
-@codingforentrepreneurs codingforentrepreneurs 18 - Go Live with Heroku + Django + Angular
-9243cbe  on Apr 24, 2017
-155 lines (120 sloc)  1.72 KB
-    
+/public/node_modules    
 .DS_Store
 client/node_modules
 client/e2e

@@ -16,12 +16,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path
 from django.views.static import serve
-
+from django.conf.urls import url
+from django.views.generic.base import TemplateView
 
 
 urlpatterns = [
-    path('', include('apps.music.urls', namespace='musicapp')),
+    path('api/', include('apps.music.urls', namespace='musicapp')),
     re_path(r'^music/(?P<path>.*)$', serve, {
             'document_root': '/users/gameshark9/music',
         }),
+    url(r'^.*', TemplateView.as_view(template_name='home.html'), name='home')
+
 ]

@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 For audio player stuff:
 https://codepen.io/katzkode/pen/Kfgix
+
+to build angular:
+ng build --output-path ../apps/music/static/ang --output-hashing none --watch
 """
 
 import os
@@ -47,7 +50,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',

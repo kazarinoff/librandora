@@ -4,6 +4,7 @@ from apps.music.models import *
 from mutagen.mp3 import MP3
 import os
 import random
+import json
 
 def index(request):
     # songs=Song.objects.values('title','tags__name','id')
@@ -41,5 +42,20 @@ def playlist(request,rid):
 
 def songdict(sid):
     return (Song.objects.filter(id=sid).values()[0])
+
+def editsong(request,sid):
+    try:
+        s=Song.objects.get(id=sid)
+        edits=json.loads(request.body)
+        s.rating=edits['rating']
+        s.save()
+        song=songdict(sid)
+    except:
+        print('didnt get the song')
+        return JsonResponse({}, safe=False)
+    
+    return JsonResponse(song, safe=False)
+
+
 
 
