@@ -13,8 +13,8 @@ export class SongService {
   playlistshow(pid){
     return this._http.get('/api/playlist/'+pid)
   }
-  playlistfirstsong(pid){
-    return this._http.get('/api/playlist/'+pid+'/song')
+  songshow(sid){
+    return this._http.get('/api/song/'+sid)
   }
   playlistnextsong(pid,currentsong){
     console.log('service getting next song')

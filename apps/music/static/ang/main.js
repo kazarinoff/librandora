@@ -232,33 +232,37 @@ var PlaylistComponent = /** @class */ (function () {
         this._router = _router;
         this.title = 'public';
         this.song = { "id": 9709, "location": "../../music/MusicBee\\Ripped Files\\De La Soul\\And the Anonymous Nobody\\02 Royalty Capes.mp3", "album": "And the Anonymous Nobody", "source": "", "bpm": "", "compilation": "", "rating": 0, "composer": "", "copyrightdate": "", "encodedby": "", "lyricist": "", "length": "", "media": "", "mood": "", "title": "Royalty Capes", "version": "", "artist": "De La Soul", "albumartist": "De La Soul", "conductor": "", "arranger": "", "discnumber": "", "tracknumber": "2/17", "author": "", "isrc": "", "discsubtitle": "", "language": "", "genre": "Hip Hop", "date": "2016", "originaldate": "", "performer": "", "organization": "", "musicbrainz_trackid": "", "website": "", "replaygain": "", "replaygainpeak": "", "musicbrainz_artistid": "", "musicbrainz_albumid": "", "musicbrainz_albumartistid": "", "musicbrainz_trmid": "", "musicip_puid": "", "musicip_fingerprint": "", "musicbrainz_albumstatus": "", "musicbrainz_albumtype": "", "releasecountry": "", "musicbrainz_discid": "", "asin": "", "barcode": "", "catalognumber": "", "musicbrainz_releasetrackid": "", "musicbrainz_releasegroupid": "", "performer2": "", "musicbrainz_workid": "", "acoustid_fingerprint": "", "acoustid_id": "", "playbackgap": "", "comment": "", "work": "", "movement": "" };
-        this.playlist = { "id": 1, "name": "funky", "description": "testing a radio playlist", "kind": "radio" };
+        this.songindex = 0;
+        this.playlist = { "playlist": { "id": 1, "name": "funky", "description": "testing a radio playlist", "kind": "radio" }, 'songlist': [], 'songs': {} };
         this.audio = new Audio();
     }
     PlaylistComponent.prototype.ngOnInit = function () {
         var _this = this;
         this._route.params.subscribe(function (params) {
             console.log(params);
-            _this.songservice.playlistshow(params.pid).subscribe(function (data) { _this.playlist = data; });
-            console.log("HERE");
-            _this.songservice.playlistfirstsong(params.pid).subscribe(function (data) {
-                _this.song = data;
-                _this.startaudio();
-                console.log('audio should start now');
+            _this.songservice.playlistshow(params.pid).subscribe(function (data) {
+                _this.playlist = data;
+                _this.songservice.songshow(_this.playlist.songlist[0]).subscribe(function (data) {
+                    _this.song = data;
+                    _this.startaudio();
+                });
             });
         });
     };
     PlaylistComponent.prototype.nexttrack = function () {
         var _this = this;
         this.audio.pause();
-        this.songservice.playlistnextsong(this.playlist.id, this.song).subscribe(function (data) { _this.song = data; });
+        if ((this.songindex + 1) >= (this.playlist.songlist.length)) {
+            this.songindex = 0;
+        }
+        else {
+            this.songindex++;
+        }
+        this.songservice.songshow(this.playlist.songlist[this.songindex]).subscribe(function (data) { _this.song = data; _this.startaudio(); });
     };
     PlaylistComponent.prototype.startaudio = function () {
         this.audio.src = this.song.location;
-        var x = this.audio.load();
-        if (x !== undefined) {
-            this.audio.play();
-        }
+        this.audio.play();
     };
     PlaylistComponent.prototype.pauseaudio = function () {
         if (this.audio.paused) {
@@ -402,8 +406,8 @@ var SongService = /** @class */ (function () {
     SongService.prototype.playlistshow = function (pid) {
         return this._http.get('/api/playlist/' + pid);
     };
-    SongService.prototype.playlistfirstsong = function (pid) {
-        return this._http.get('/api/playlist/' + pid + '/song');
+    SongService.prototype.songshow = function (sid) {
+        return this._http.get('/api/song/' + sid);
     };
     SongService.prototype.playlistnextsong = function (pid, currentsong) {
         console.log('service getting next song');
