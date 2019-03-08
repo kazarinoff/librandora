@@ -7,7 +7,19 @@ import { HttpClient } from '@angular/common/http';
 export class SongService {
 
   constructor(private _http:HttpClient) { }
-
+  playlists(){
+    return this._http.get('/api/playlist/all')
+  }
+  playlistshow(pid){
+    return this._http.get('/api/playlist/'+pid)
+  }
+  playlistfirstsong(pid){
+    return this._http.get('/api/playlist/'+pid+'/song')
+  }
+  playlistnextsong(pid,currentsong){
+    console.log('service getting next song')
+    return this._http.post('/api/playlist/'+pid+'/song',currentsong)
+  }
   randomsong(){
     console.log('randomsong')
     return this._http.get('/api/randomsong');

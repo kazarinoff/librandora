@@ -74,6 +74,7 @@ class Playlist(models.Model):
     songs=models.ManyToManyField(Song, through='Listing',related_name='playlists')
     dislikesongs=models.ManyToManyField(Song, related_name='forbiddenplaylists')
     description=models.TextField()
+    kind=models.CharField(max_length=20)
 
 class Listing(models.Model):
     song=models.ForeignKey(Song, on_delete=models.CASCADE)

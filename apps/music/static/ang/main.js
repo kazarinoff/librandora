@@ -36,10 +36,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
+/* harmony import */ var _playlist_playlist_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./playlist/playlist.component */ "./src/app/playlist/playlist.component.ts");
+/* harmony import */ var _radio_radio_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./radio/radio.component */ "./src/app/radio/radio.component.ts");
 
 
 
-var routes = [];
+
+
+var routes = [
+    { path: 'playlist/:pid', component: _playlist_playlist_component__WEBPACK_IMPORTED_MODULE_3__["PlaylistComponent"] },
+    { path: 'radio', component: _radio_radio_component__WEBPACK_IMPORTED_MODULE_4__["RadioComponent"] },
+    { path: 'playlist/:pid', component: _playlist_playlist_component__WEBPACK_IMPORTED_MODULE_3__["PlaylistComponent"] },
+    { path: '**', redirectTo: 'radio' },
+    { path: '', pathMatch: 'full', redirectTo: 'radio' }
+];
 var AppRoutingModule = /** @class */ (function () {
     function AppRoutingModule() {
     }
@@ -74,7 +84,7 @@ module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<body>\n<h1>Play the radio</h1>\n\n<div>\n  <p id='title'>Track: {{song.title}}</p>\n  <p id='artist'>Artist: {{song.artist}}</p>\n  <p id='album'>Album: {{song.album}}</p>\n  <p id='genre'>Genre: {{song.genre}}</p>\n  <p id='rating'>Rating: {{song.rating}}</p>\n\n  <form (ngSubmit)='editsong()'>\n    Rating:<input [(ngModel)]=\"song.rating\" type='number' name='rating'>  \n    <input type='submit' value='RATE'>\n  </form>\n</div>\n<div>\n  <button (click)=\"randomtrack()\" id='next'>RANDOM TRACK</button>  \n  <button (click)=\"pauseaudio()\" id='pause'>Start/Stop Music</button>\n\n</div>\n<router-outlet></router-outlet>\n</body>\n\n\n"
+module.exports = "<body>\n<h1>LIBRANDORA!!!</h1>\n\n\n<router-outlet></router-outlet>\n</body>\n\n\n"
 
 /***/ }),
 
@@ -101,38 +111,8 @@ var AppComponent = /** @class */ (function () {
         this.songservice = songservice;
         this._route = _route;
         this._router = _router;
-        this.title = 'public';
-        this.song = { "id": 6830, "location": "../../music/iTunes\\iTunes Media\\Music\\Rise Up Singing\\Disk M_ Farm & Prairie_Mountain Voices\\34 Roll On, Columbia.m4a", "album": "['Disk M: Farm & Prairie/Mountain Voices']", "source": "", "bpm": "", "compilation": "False", "rating": 0, "composer": "", "copyrightdate": "", "encodedby": "", "lyricist": "", "length": "", "media": "", "mood": "", "title": "['Roll On, Columbia']", "version": "", "artist": "['Rise Up Singing']", "albumartist": "", "conductor": "", "arranger": "", "discnumber": "", "tracknumber": "", "author": "", "isrc": "", "discsubtitle": "", "language": "", "genre": "['Folk']", "date": "", "originaldate": "", "performer": "", "organization": "", "musicbrainz_trackid": "", "website": "", "replaygain": "", "replaygainpeak": "", "musicbrainz_artistid": "", "musicbrainz_albumid": "", "musicbrainz_albumartistid": "", "musicbrainz_trmid": "", "musicip_puid": "", "musicip_fingerprint": "", "musicbrainz_albumstatus": "", "musicbrainz_albumtype": "", "releasecountry": "", "musicbrainz_discid": "", "asin": "", "barcode": "", "catalognumber": "", "musicbrainz_releasetrackid": "", "musicbrainz_releasegroupid": "", "performer2": "", "musicbrainz_workid": "", "acoustid_fingerprint": "", "acoustid_id": "", "playbackgap": "", "comment": "", "work": "", "movement": "" };
-        this.audio = new Audio();
     }
-    AppComponent.prototype.ngOnInit = function () {
-        var _this = this;
-        this.songservice.randomsong().subscribe(function (data) {
-            _this.song = data;
-            _this.startaudio();
-        });
-    };
-    AppComponent.prototype.randomtrack = function () {
-        var _this = this;
-        this.audio.pause();
-        this.songservice.randomsong().subscribe(function (data) { _this.song = data; _this.startaudio(); });
-    };
-    AppComponent.prototype.startaudio = function () {
-        this.audio.src = this.song.location;
-        this.audio.load();
-        this.audio.play();
-    };
-    AppComponent.prototype.pauseaudio = function () {
-        if (this.audio.paused) {
-            this.audio.play();
-        }
-        else {
-            this.audio.pause();
-        }
-    };
-    AppComponent.prototype.editsong = function () {
-        this.songservice.editsong(this.song.id, { rating: this.song.rating }).subscribe(function (data) { });
-    };
+    AppComponent.prototype.ngOnInit = function () { };
     AppComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
             selector: 'app-root',
@@ -166,6 +146,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _app_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./app.component */ "./src/app/app.component.ts");
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
 /* harmony import */ var _song_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./song.service */ "./src/app/song.service.ts");
+/* harmony import */ var _playlist_playlist_component__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./playlist/playlist.component */ "./src/app/playlist/playlist.component.ts");
+/* harmony import */ var _radio_radio_component__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./radio/radio.component */ "./src/app/radio/radio.component.ts");
+
+
 
 
 
@@ -180,7 +164,9 @@ var AppModule = /** @class */ (function () {
     AppModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_2__["NgModule"])({
             declarations: [
-                _app_component__WEBPACK_IMPORTED_MODULE_5__["AppComponent"]
+                _app_component__WEBPACK_IMPORTED_MODULE_5__["AppComponent"],
+                _playlist_playlist_component__WEBPACK_IMPORTED_MODULE_8__["PlaylistComponent"],
+                _radio_radio_component__WEBPACK_IMPORTED_MODULE_9__["RadioComponent"]
             ],
             imports: [
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_1__["BrowserModule"],
@@ -193,6 +179,197 @@ var AppModule = /** @class */ (function () {
         })
     ], AppModule);
     return AppModule;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/playlist/playlist.component.css":
+/*!*************************************************!*\
+  !*** ./src/app/playlist/playlist.component.css ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL3BsYXlsaXN0L3BsYXlsaXN0LmNvbXBvbmVudC5jc3MifQ== */"
+
+/***/ }),
+
+/***/ "./src/app/playlist/playlist.component.html":
+/*!**************************************************!*\
+  !*** ./src/app/playlist/playlist.component.html ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<h2>{{playlist.name}}</h2>\n<div>\n  <p id='title'>Track: {{song.title}}</p>\n  <p id='artist'>Artist: {{song.artist}}</p>\n  <p id='album'>Album: {{song.album}}</p>\n  <p id='genre'>Genre: {{song.genre}}</p>\n  <p id='rating'>Rating: {{song.rating}}</p>\n\n  <form (ngSubmit)='editsong()'>\n    Rating:<input [(ngModel)]=\"song.rating\" type='number' name='rating'>  \n    <input type='submit' value='RATE'>\n  </form>\n</div>\n<div>\n  <button (click)=\"nexttrack()\" id='next'>NEXT TRACK</button>  \n  <button (click)=\"pauseaudio()\" id='pause'>Start/Stop Music</button>\n\n</div>\n<!-- <div>\n  <h3>playlists:</h3>\n  <p *ngFor=\"let pl of playlists\"><a [routerLink]=\"['/playlist', pl.id]\">{{pl.name}}</a></p>\n</div> -->"
+
+/***/ }),
+
+/***/ "./src/app/playlist/playlist.component.ts":
+/*!************************************************!*\
+  !*** ./src/app/playlist/playlist.component.ts ***!
+  \************************************************/
+/*! exports provided: PlaylistComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PlaylistComponent", function() { return PlaylistComponent; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
+/* harmony import */ var _song_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../song.service */ "./src/app/song.service.ts");
+
+
+
+
+var PlaylistComponent = /** @class */ (function () {
+    function PlaylistComponent(songservice, _route, _router) {
+        this.songservice = songservice;
+        this._route = _route;
+        this._router = _router;
+        this.title = 'public';
+        this.song = { "id": 9709, "location": "../../music/MusicBee\\Ripped Files\\De La Soul\\And the Anonymous Nobody\\02 Royalty Capes.mp3", "album": "And the Anonymous Nobody", "source": "", "bpm": "", "compilation": "", "rating": 0, "composer": "", "copyrightdate": "", "encodedby": "", "lyricist": "", "length": "", "media": "", "mood": "", "title": "Royalty Capes", "version": "", "artist": "De La Soul", "albumartist": "De La Soul", "conductor": "", "arranger": "", "discnumber": "", "tracknumber": "2/17", "author": "", "isrc": "", "discsubtitle": "", "language": "", "genre": "Hip Hop", "date": "2016", "originaldate": "", "performer": "", "organization": "", "musicbrainz_trackid": "", "website": "", "replaygain": "", "replaygainpeak": "", "musicbrainz_artistid": "", "musicbrainz_albumid": "", "musicbrainz_albumartistid": "", "musicbrainz_trmid": "", "musicip_puid": "", "musicip_fingerprint": "", "musicbrainz_albumstatus": "", "musicbrainz_albumtype": "", "releasecountry": "", "musicbrainz_discid": "", "asin": "", "barcode": "", "catalognumber": "", "musicbrainz_releasetrackid": "", "musicbrainz_releasegroupid": "", "performer2": "", "musicbrainz_workid": "", "acoustid_fingerprint": "", "acoustid_id": "", "playbackgap": "", "comment": "", "work": "", "movement": "" };
+        this.playlist = { "id": 1, "name": "funky", "description": "testing a radio playlist", "kind": "radio" };
+        this.audio = new Audio();
+    }
+    PlaylistComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this._route.params.subscribe(function (params) {
+            console.log(params);
+            _this.songservice.playlistshow(params.pid).subscribe(function (data) { _this.playlist = data; });
+            console.log("HERE");
+            _this.songservice.playlistfirstsong(params.pid).subscribe(function (data) {
+                _this.song = data;
+                _this.startaudio();
+                console.log('audio should start now');
+            });
+        });
+    };
+    PlaylistComponent.prototype.nexttrack = function () {
+        var _this = this;
+        this.audio.pause();
+        this.songservice.playlistnextsong(this.playlist.id, this.song).subscribe(function (data) { _this.song = data; });
+    };
+    PlaylistComponent.prototype.startaudio = function () {
+        this.audio.src = this.song.location;
+        var x = this.audio.load();
+        if (x !== undefined) {
+            this.audio.play();
+        }
+    };
+    PlaylistComponent.prototype.pauseaudio = function () {
+        if (this.audio.paused) {
+            this.audio.play();
+        }
+        else {
+            this.audio.pause();
+        }
+    };
+    PlaylistComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
+            selector: 'app-playlist',
+            template: __webpack_require__(/*! ./playlist.component.html */ "./src/app/playlist/playlist.component.html"),
+            styles: [__webpack_require__(/*! ./playlist.component.css */ "./src/app/playlist/playlist.component.css")]
+        }),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_song_service__WEBPACK_IMPORTED_MODULE_3__["SongService"], _angular_router__WEBPACK_IMPORTED_MODULE_2__["ActivatedRoute"], _angular_router__WEBPACK_IMPORTED_MODULE_2__["Router"]])
+    ], PlaylistComponent);
+    return PlaylistComponent;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/radio/radio.component.css":
+/*!*******************************************!*\
+  !*** ./src/app/radio/radio.component.css ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL3JhZGlvL3JhZGlvLmNvbXBvbmVudC5jc3MifQ== */"
+
+/***/ }),
+
+/***/ "./src/app/radio/radio.component.html":
+/*!********************************************!*\
+  !*** ./src/app/radio/radio.component.html ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<h2>Play the Radio</h2>\n<div>\n  <p id='title'>Track: {{song.title}}</p>\n  <p id='artist'>Artist: {{song.artist}}</p>\n  <p id='album'>Album: {{song.album}}</p>\n  <p id='genre'>Genre: {{song.genre}}</p>\n  <p id='rating'>Rating: {{song.rating}}</p>\n\n  <form (ngSubmit)='editsong()'>\n    Rating:<input [(ngModel)]=\"song.rating\" type='number' name='rating'>  \n    <input type='submit' value='RATE'>\n  </form>\n</div>\n<div>\n  <button (click)=\"randomtrack()\" id='next'>RANDOM TRACK</button>  \n  <button (click)=\"pauseaudio()\" id='pause'>Start/Stop Music</button>\n\n</div>\n<div>\n  <h3>playlists:</h3>\n  <p *ngFor=\"let pl of playlists\"><a [routerLink]=\"['/playlist', pl.id]\">{{pl.name}}</a></p>\n</div>"
+
+/***/ }),
+
+/***/ "./src/app/radio/radio.component.ts":
+/*!******************************************!*\
+  !*** ./src/app/radio/radio.component.ts ***!
+  \******************************************/
+/*! exports provided: RadioComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RadioComponent", function() { return RadioComponent; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
+/* harmony import */ var _song_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../song.service */ "./src/app/song.service.ts");
+
+
+
+
+var RadioComponent = /** @class */ (function () {
+    function RadioComponent(songservice, _route, _router) {
+        this.songservice = songservice;
+        this._route = _route;
+        this._router = _router;
+        this.title = 'public';
+        this.song = { "id": 6830, "location": "../../music/iTunes\\iTunes Media\\Music\\Rise Up Singing\\Disk M_ Farm & Prairie_Mountain Voices\\34 Roll On, Columbia.m4a", "album": "['Disk M: Farm & Prairie/Mountain Voices']", "source": "", "bpm": "", "compilation": "False", "rating": 0, "composer": "", "copyrightdate": "", "encodedby": "", "lyricist": "", "length": "", "media": "", "mood": "", "title": "['Roll On, Columbia']", "version": "", "artist": "['Rise Up Singing']", "albumartist": "", "conductor": "", "arranger": "", "discnumber": "", "tracknumber": "", "author": "", "isrc": "", "discsubtitle": "", "language": "", "genre": "['Folk']", "date": "", "originaldate": "", "performer": "", "organization": "", "musicbrainz_trackid": "", "website": "", "replaygain": "", "replaygainpeak": "", "musicbrainz_artistid": "", "musicbrainz_albumid": "", "musicbrainz_albumartistid": "", "musicbrainz_trmid": "", "musicip_puid": "", "musicip_fingerprint": "", "musicbrainz_albumstatus": "", "musicbrainz_albumtype": "", "releasecountry": "", "musicbrainz_discid": "", "asin": "", "barcode": "", "catalognumber": "", "musicbrainz_releasetrackid": "", "musicbrainz_releasegroupid": "", "performer2": "", "musicbrainz_workid": "", "acoustid_fingerprint": "", "acoustid_id": "", "playbackgap": "", "comment": "", "work": "", "movement": "" };
+        this.audio = new Audio();
+    }
+    RadioComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.songservice.randomsong().subscribe(function (data) {
+            _this.song = data;
+            _this.startaudio();
+        });
+        this.songservice.playlists().subscribe(function (data) { _this.playlists = data; });
+    };
+    RadioComponent.prototype.randomtrack = function () {
+        var _this = this;
+        this.audio.pause();
+        this.songservice.randomsong().subscribe(function (data) { _this.song = data; _this.startaudio(); });
+    };
+    RadioComponent.prototype.startaudio = function () {
+        this.audio.src = this.song.location;
+        this.audio.load();
+        this.audio.play();
+    };
+    RadioComponent.prototype.pauseaudio = function () {
+        if (this.audio.paused) {
+            this.audio.play();
+        }
+        else {
+            this.audio.pause();
+        }
+    };
+    RadioComponent.prototype.editsong = function () {
+        this.songservice.editsong(this.song.id, { rating: this.song.rating }).subscribe(function (data) { });
+    };
+    RadioComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
+            selector: 'app-radio',
+            template: __webpack_require__(/*! ./radio.component.html */ "./src/app/radio/radio.component.html"),
+            styles: [__webpack_require__(/*! ./radio.component.css */ "./src/app/radio/radio.component.css")]
+        }),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_song_service__WEBPACK_IMPORTED_MODULE_3__["SongService"], _angular_router__WEBPACK_IMPORTED_MODULE_2__["ActivatedRoute"], _angular_router__WEBPACK_IMPORTED_MODULE_2__["Router"]])
+    ], RadioComponent);
+    return RadioComponent;
 }());
 
 
@@ -219,6 +396,19 @@ var SongService = /** @class */ (function () {
     function SongService(_http) {
         this._http = _http;
     }
+    SongService.prototype.playlists = function () {
+        return this._http.get('/api/playlist/all');
+    };
+    SongService.prototype.playlistshow = function (pid) {
+        return this._http.get('/api/playlist/' + pid);
+    };
+    SongService.prototype.playlistfirstsong = function (pid) {
+        return this._http.get('/api/playlist/' + pid + '/song');
+    };
+    SongService.prototype.playlistnextsong = function (pid, currentsong) {
+        console.log('service getting next song');
+        return this._http.post('/api/playlist/' + pid + '/song', currentsong);
+    };
     SongService.prototype.randomsong = function () {
         console.log('randomsong');
         return this._http.get('/api/randomsong');

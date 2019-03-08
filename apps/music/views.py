@@ -5,6 +5,7 @@ from mutagen.mp3 import MP3
 import os
 import random
 import json
+from django.db.models import Count
 
 def index(request):
     # songs=Song.objects.values('title','tags__name','id')
@@ -33,15 +34,35 @@ def randomsong(request):
     song=songdict(sn)
     return JsonResponse(song, safe=False)
 
-def nextsong(request,sid):
-    s=Song.objects.get(id=sid)
+def getsong(request,sid):
+    song=songdict(sid)
+    return JsonResponse(song, safe=False)
 
-def playlist(request,rid):
-    playlist=Playlist.objects.get(id=rid)
-    return render(request,'playlistshow.html',{'playlist':playlist,'songs':playlist.songs})
+def genreindex(request):
+    g=Song.objects.values('genre').annotate(Count('genre'))
+    gi=[]
+    for genre in g:
+        gi.append(genre)
+    return JsonResponse(gi, safe=False)
+
+def getplaylistsong(request,pid):
+    if request.method=='POST':
+        songrequest=json.loads(request.body)
+        sid=songrequest['id']
+        s=Listing.objects.get(playlist=pid,song=sid).iterator().id
+        return JsonResponse(songdict(s), safe=False)
+    else:
+        s=Playlist.objects.get(id=pid).songs.first().id
+        return JsonResponse(songdict(s), safe=False)
+
+def playlistshow(request,pid):
+        return JsonResponse(playlistdict(pid), safe=False)
 
 def songdict(sid):
     return (Song.objects.filter(id=sid).values()[0])
+
+def playlistdict(pid):
+    return (Playlist.objects.filter(id=pid).values()[0])
 
 def editsong(request,sid):
     try:
@@ -56,6 +77,12 @@ def editsong(request,sid):
     
     return JsonResponse(song, safe=False)
 
+def playlistindex(request):
+    p=Playlist.objects.all().values('id','name')
+    pls=[]
+    for playlist in p:
+        pls.append(playlist)
+    return JsonResponse(pls, safe=False)
 
-
-
+def playlistcreate(request):
+    pass
