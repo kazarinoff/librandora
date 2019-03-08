@@ -72,12 +72,22 @@ class Playlist(models.Model):
     name=models.CharField(max_length=100)
     relatedplaylists= models.ManyToManyField('self', related_name="companionplaylists")
     songs=models.ManyToManyField(Song, through='Listing',related_name='playlists')
-    dislikesongs=models.ManyToManyField(Song, related_name='forbiddenplaylists')
     description=models.TextField()
-    kind=models.CharField(max_length=20)
+
+class Station(models.Model):
+    name=models.CharField(max_length=100)
+    songs=models.ManyToManyField(Song, through='Stationlisting',related_name='stations')
+    dislikedsongs=models.ManyToManyField(Song, related_name='forbiddenstations')
+    description=models.TextField()
 
 class Listing(models.Model):
     song=models.ForeignKey(Song, on_delete=models.CASCADE)
     playlist=models.ForeignKey(Playlist, on_delete=models.CASCADE)
+    created_at=models.DateTimeField(auto_now_add=True)
+    updated_at=models.DateTimeField(auto_now_add=True)
+
+class Stationlisting(models.Model):
+    song=models.ForeignKey(Song, on_delete=models.CASCADE)
+    station=models.ForeignKey(Station, on_delete=models.CASCADE)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now_add=True)

@@ -38,6 +38,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
 /* harmony import */ var _playlist_playlist_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./playlist/playlist.component */ "./src/app/playlist/playlist.component.ts");
 /* harmony import */ var _radio_radio_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./radio/radio.component */ "./src/app/radio/radio.component.ts");
+/* harmony import */ var _station_station_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./station/station.component */ "./src/app/station/station.component.ts");
+
 
 
 
@@ -47,6 +49,7 @@ var routes = [
     { path: 'playlist/:pid', component: _playlist_playlist_component__WEBPACK_IMPORTED_MODULE_3__["PlaylistComponent"] },
     { path: 'radio', component: _radio_radio_component__WEBPACK_IMPORTED_MODULE_4__["RadioComponent"] },
     { path: 'playlist/:pid', component: _playlist_playlist_component__WEBPACK_IMPORTED_MODULE_3__["PlaylistComponent"] },
+    { path: 'station/:tid', component: _station_station_component__WEBPACK_IMPORTED_MODULE_5__["StationComponent"] },
     { path: '**', redirectTo: 'radio' },
     { path: '', pathMatch: 'full', redirectTo: 'radio' }
 ];
@@ -148,6 +151,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _song_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./song.service */ "./src/app/song.service.ts");
 /* harmony import */ var _playlist_playlist_component__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./playlist/playlist.component */ "./src/app/playlist/playlist.component.ts");
 /* harmony import */ var _radio_radio_component__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./radio/radio.component */ "./src/app/radio/radio.component.ts");
+/* harmony import */ var _station_station_component__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./station/station.component */ "./src/app/station/station.component.ts");
+
 
 
 
@@ -166,7 +171,8 @@ var AppModule = /** @class */ (function () {
             declarations: [
                 _app_component__WEBPACK_IMPORTED_MODULE_5__["AppComponent"],
                 _playlist_playlist_component__WEBPACK_IMPORTED_MODULE_8__["PlaylistComponent"],
-                _radio_radio_component__WEBPACK_IMPORTED_MODULE_9__["RadioComponent"]
+                _radio_radio_component__WEBPACK_IMPORTED_MODULE_9__["RadioComponent"],
+                _station_station_component__WEBPACK_IMPORTED_MODULE_10__["StationComponent"]
             ],
             imports: [
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_1__["BrowserModule"],
@@ -406,19 +412,27 @@ var SongService = /** @class */ (function () {
     SongService.prototype.playlistshow = function (pid) {
         return this._http.get('/api/playlist/' + pid);
     };
+    SongService.prototype.stationshow = function (tid) {
+        return this._http.get('/api/station/' + tid);
+    };
     SongService.prototype.songshow = function (sid) {
         return this._http.get('/api/song/' + sid);
     };
-    SongService.prototype.playlistnextsong = function (pid, currentsong) {
-        console.log('service getting next song');
-        return this._http.post('/api/playlist/' + pid + '/song', currentsong);
-    };
     SongService.prototype.randomsong = function () {
-        console.log('randomsong');
         return this._http.get('/api/randomsong');
+    };
+    SongService.prototype.stationnext = function (tid) {
+        console.log('asking django for a song');
+        return this._http.get('/api/station/' + tid + '/nextsong/');
     };
     SongService.prototype.editsong = function (sid, edits) {
         return this._http.post('/api/' + sid, edits);
+    };
+    SongService.prototype.likesong = function (tid, sid) {
+        return this._http.get('/api/station/' + tid + '/likesong/' + sid);
+    };
+    SongService.prototype.dislikesong = function (tid, sid) {
+        return this._http.get('/api/station/' + tid + '/dislikesong/' + sid);
     };
     SongService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
@@ -427,6 +441,115 @@ var SongService = /** @class */ (function () {
         tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpClient"]])
     ], SongService);
     return SongService;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/station/station.component.css":
+/*!***********************************************!*\
+  !*** ./src/app/station/station.component.css ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL3N0YXRpb24vc3RhdGlvbi5jb21wb25lbnQuY3NzIn0= */"
+
+/***/ }),
+
+/***/ "./src/app/station/station.component.html":
+/*!************************************************!*\
+  !*** ./src/app/station/station.component.html ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<h2>{{station.name}}</h2>\n<div>\n  <p id='title'>Track: {{song.title}}</p>\n  <p id='artist'>Artist: {{song.artist}}</p>\n  <p id='album'>Album: {{song.album}}</p>\n  <p id='genre'>Genre: {{song.genre}}</p>\n  <p id='rating'>Rating: {{song.rating}}</p>\n\n  <form (ngSubmit)='editsong()'>\n    Rating:<input [(ngModel)]=\"song.rating\" type='number' name='rating'>  \n    <input type='submit' value='RATE'>\n  </form>\n</div>\n<div>\n  <button (click)=\"nexttrack()\" id='next'>NEXT TRACK</button>  \n  <button (click)=\"pauseaudio()\" id='pause'>Start/Stop Music</button>\n  <button (click)=\"likesong()\" id='pause'>LIKE</button>\n  <button (click)=\"dislikesong()\" id='pause'>DISLIKE</button>\n  \n</div>\n"
+
+/***/ }),
+
+/***/ "./src/app/station/station.component.ts":
+/*!**********************************************!*\
+  !*** ./src/app/station/station.component.ts ***!
+  \**********************************************/
+/*! exports provided: StationComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "StationComponent", function() { return StationComponent; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
+/* harmony import */ var _song_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../song.service */ "./src/app/song.service.ts");
+
+
+
+
+var StationComponent = /** @class */ (function () {
+    function StationComponent(songservice, _route, _router) {
+        this.songservice = songservice;
+        this._route = _route;
+        this._router = _router;
+        this.title = 'public';
+        this.song = { "id": 9709, "location": "../../music/MusicBee\\Ripped Files\\De La Soul\\And the Anonymous Nobody\\02 Royalty Capes.mp3", "album": "And the Anonymous Nobody", "source": "", "bpm": "", "compilation": "", "rating": 0, "composer": "", "copyrightdate": "", "encodedby": "", "lyricist": "", "length": "", "media": "", "mood": "", "title": "Royalty Capes", "version": "", "artist": "De La Soul", "albumartist": "De La Soul", "conductor": "", "arranger": "", "discnumber": "", "tracknumber": "2/17", "author": "", "isrc": "", "discsubtitle": "", "language": "", "genre": "Hip Hop", "date": "2016", "originaldate": "", "performer": "", "organization": "", "musicbrainz_trackid": "", "website": "", "replaygain": "", "replaygainpeak": "", "musicbrainz_artistid": "", "musicbrainz_albumid": "", "musicbrainz_albumartistid": "", "musicbrainz_trmid": "", "musicip_puid": "", "musicip_fingerprint": "", "musicbrainz_albumstatus": "", "musicbrainz_albumtype": "", "releasecountry": "", "musicbrainz_discid": "", "asin": "", "barcode": "", "catalognumber": "", "musicbrainz_releasetrackid": "", "musicbrainz_releasegroupid": "", "performer2": "", "musicbrainz_workid": "", "acoustid_fingerprint": "", "acoustid_id": "", "playbackgap": "", "comment": "", "work": "", "movement": "" };
+        this.songindex = 0;
+        this.station = { "station": { "id": 1, "name": "funky", "description": "testing a radio playlist", "kind": "radio" }, 'songlist': [], 'song': { "id": 9709, "location": "../../music/MusicBee\\Ripped Files\\De La Soul\\And the Anonymous Nobody\\02 Royalty Capes.mp3", "album": "And the Anonymous Nobody", "source": "", "bpm": "", "compilation": "", "rating": 0, "composer": "", "copyrightdate": "", "encodedby": "", "lyricist": "", "length": "", "media": "", "mood": "", "title": "Royalty Capes", "version": "", "artist": "De La Soul", "albumartist": "De La Soul", "conductor": "", "arranger": "", "discnumber": "", "tracknumber": "2/17", "author": "", "isrc": "", "discsubtitle": "", "language": "", "genre": "Hip Hop", "date": "2016", "originaldate": "", "performer": "", "organization": "", "musicbrainz_trackid": "", "website": "", "replaygain": "", "replaygainpeak": "", "musicbrainz_artistid": "", "musicbrainz_albumid": "", "musicbrainz_albumartistid": "", "musicbrainz_trmid": "", "musicip_puid": "", "musicip_fingerprint": "", "musicbrainz_albumstatus": "", "musicbrainz_albumtype": "", "releasecountry": "", "musicbrainz_discid": "", "asin": "", "barcode": "", "catalognumber": "", "musicbrainz_releasetrackid": "", "musicbrainz_releasegroupid": "", "performer2": "", "musicbrainz_workid": "", "acoustid_fingerprint": "", "acoustid_id": "", "playbackgap": "", "comment": "", "work": "", "movement": "" } };
+        this.audio = new Audio();
+    }
+    StationComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this._route.params.subscribe(function (params) {
+            _this.songservice.stationshow(params.tid).subscribe(function (data) {
+                _this.station = data;
+                _this.song = _this.station.song;
+                _this.startaudio();
+            });
+        });
+    };
+    StationComponent.prototype.startaudio = function () {
+        this.audio.src = this.song.location;
+        this.audio.play();
+    };
+    StationComponent.prototype.pauseaudio = function () {
+        if (this.audio.paused) {
+            this.audio.play();
+        }
+        else {
+            this.audio.pause();
+        }
+    };
+    StationComponent.prototype.likesong = function () {
+        this.songservice.likesong(this.station.station.id, this.song.id).subscribe(function (data) { });
+    };
+    StationComponent.prototype.dislikesong = function () {
+        this.songservice.dislikesong(this.station.station.id, this.song.id).subscribe(function (data) { });
+    };
+    StationComponent.prototype.randomtrack = function () {
+        var _this = this;
+        this.audio.pause();
+        this.songservice.randomsong().subscribe(function (data) { _this.song = data; _this.startaudio(); });
+    };
+    StationComponent.prototype.nexttrack = function () {
+        var _this = this;
+        this.audio.pause();
+        console.log('asking service for next track');
+        this.songservice.stationnext(this.station.station.id).subscribe(function (data) {
+            console.log('got some data', data);
+            _this.song = data;
+            _this.startaudio();
+        });
+    };
+    StationComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
+            selector: 'app-station',
+            template: __webpack_require__(/*! ./station.component.html */ "./src/app/station/station.component.html"),
+            styles: [__webpack_require__(/*! ./station.component.css */ "./src/app/station/station.component.css")]
+        }),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_song_service__WEBPACK_IMPORTED_MODULE_3__["SongService"], _angular_router__WEBPACK_IMPORTED_MODULE_2__["ActivatedRoute"], _angular_router__WEBPACK_IMPORTED_MODULE_2__["Router"]])
+    ], StationComponent);
+    return StationComponent;
 }());
 
 

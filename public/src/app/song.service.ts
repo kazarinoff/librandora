@@ -13,18 +13,27 @@ export class SongService {
   playlistshow(pid){
     return this._http.get('/api/playlist/'+pid)
   }
+  stationshow(tid){
+    return this._http.get('/api/station/'+tid)
+  }
   songshow(sid){
     return this._http.get('/api/song/'+sid)
   }
-  playlistnextsong(pid,currentsong){
-    console.log('service getting next song')
-    return this._http.post('/api/playlist/'+pid+'/song',currentsong)
-  }
   randomsong(){
-    console.log('randomsong')
     return this._http.get('/api/randomsong');
+  }
+  stationnext(tid){
+    console.log('asking django for a song')
+    return this._http.get('/api/station/'+tid+'/nextsong/');
   }
   editsong(sid,edits){
     return this._http.post('/api/'+sid, edits);
   }
+  likesong(tid,sid){
+    return this._http.get('/api/station/'+tid+'/likesong/'+sid);
+  }
+  dislikesong(tid,sid){
+    return this._http.get('/api/station/'+tid+'/dislikesong/'+sid);
+  }
+
 }

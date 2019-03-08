@@ -1,0 +1,20 @@
+<h2>{{station.name}}</h2>
+<div>
+  <p id='title'>Track: {{song.title}}</p>
+  <p id='artist'>Artist: {{song.artist}}</p>
+  <p id='album'>Album: {{song.album}}</p>
+  <p id='genre'>Genre: {{song.genre}}</p>
+  <p id='rating'>Rating: {{song.rating}}</p>
+
+  <form (ngSubmit)='editsong()'>
+    Rating:<input [(ngModel)]="song.rating" type='number' name='rating'>  
+    <input type='submit' value='RATE'>
+  </form>
+</div>
+<div>
+  <button (click)="nexttrack()" id='next'>NEXT TRACK</button>  
+  <button (click)="pauseaudio()" id='pause'>Start/Stop Music</button>
+  <button (click)="likesong()" id='pause'>LIKE</button>
+  <button (click)="dislikesong()" id='pause'>DISLIKE</button>
+  
+</div>

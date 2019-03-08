@@ -45,6 +45,31 @@ def genreindex(request):
 def playlistshow(request,pid):
         return JsonResponse(playlistdict(pid), safe=False)
 
+def stationshow(request,tid):
+    t=Station.objects.filter(id=tid).values()[0]
+    s=Station.objects.get(id=tid).songs.first().id
+    return JsonResponse({'station':t,'song':songdict(s)}, safe=False)
+
+def likesong(request,sid,tid):
+    s=Song.objects.get(id=sid)
+    t=Station.objects.get(id=tid)
+    t.dislikedsongs.remove(s)
+    Stationlisting.objects.create(song=s,station=t)
+    print ('songliked')
+    return JsonResponse(songdict(sid), safe=False)
+
+def dislikesong(request,sid,tid):
+    s=Song.objects.get(id=sid)
+    t=Station.objects.get(id=tid)
+    try:
+        tl=Stationlisting.objects.get(song=sid,station=tid)
+        tl.delete()
+    except:
+        pass
+    Station.objects.get(id=tid).dislikedsongs.add(Song.objects.get(id=sid))
+    print ('DISLLIKE')
+    return JsonResponse(songdict(sid), safe=False)
+
 def songdict(sid):
     return (Song.objects.filter(id=sid).values()[0])
 
@@ -81,3 +106,35 @@ def playlistindex(request):
 
 def playlistcreate(request):
     pass
+
+def scoresong(tid,sid):
+    score=0
+    scoredict={'points':{},'minuses':{}}
+    t=Station.objects.get(id=tid)
+    song=Song.objects.get(id=sid)
+    songs=t.songs.all()
+    ds=t.dislikedsongs.all()
+    gs=t.songs.all().values('genre').annotate(Count('genre'))
+    for i in gs:
+        scoredict['points'][i['genre']]=i['genre__count']
+    dgs=t.dislikedsongs.all().values('genre').annotate(Count('genre'))
+    for h in dgs:
+        scoredict['minuses'][i['genre']]=i['genre__count']
+    if "song.genre" in scoredict['points']:
+        score+=scoredict['points'][song.genre]
+    if "song.genre" in scoredict['minuses']:
+        score-=scoredict['minuses'][song.genre]
+    return score
+
+def stationnextsong(request, tid):
+    randomnumber=random.randint(0,1)
+    rn=Song.objects.last().id
+    songnumber=999
+    tries=0
+    print ('got here')
+    while (songnumber != randomnumber) and (tries < 1):
+        sn=random.randint(1,rn)
+        songnumber=scoresong(tid,sn)
+        tries +=1
+    print('sending the song django found')
+    return JsonResponse(songdict(sn), safe=False)

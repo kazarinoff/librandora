@@ -7,12 +7,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { SongService } from './song.service';
 import { PlaylistComponent } from './playlist/playlist.component';
 import { RadioComponent } from './radio/radio.component';
+import { StationComponent } from './station/station.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PlaylistComponent,
-    RadioComponent
+    RadioComponent,
+    StationComponent
   ],
   imports: [
     BrowserModule,
