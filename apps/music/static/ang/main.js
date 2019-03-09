@@ -422,8 +422,7 @@ var SongService = /** @class */ (function () {
         return this._http.get('/api/randomsong');
     };
     SongService.prototype.stationnext = function (tid) {
-        console.log('asking django for a song');
-        return this._http.get('/api/station/' + tid + '/nextsong/');
+        return this._http.get('/api/station/' + tid + '/nexttrack');
     };
     SongService.prototype.editsong = function (sid, edits) {
         return this._http.post('/api/' + sid, edits);
@@ -465,7 +464,7 @@ module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<h2>{{station.name}}</h2>\n<div>\n  <p id='title'>Track: {{song.title}}</p>\n  <p id='artist'>Artist: {{song.artist}}</p>\n  <p id='album'>Album: {{song.album}}</p>\n  <p id='genre'>Genre: {{song.genre}}</p>\n  <p id='rating'>Rating: {{song.rating}}</p>\n\n  <form (ngSubmit)='editsong()'>\n    Rating:<input [(ngModel)]=\"song.rating\" type='number' name='rating'>  \n    <input type='submit' value='RATE'>\n  </form>\n</div>\n<div>\n  <button (click)=\"nexttrack()\" id='next'>NEXT TRACK</button>  \n  <button (click)=\"pauseaudio()\" id='pause'>Start/Stop Music</button>\n  <button (click)=\"likesong()\" id='pause'>LIKE</button>\n  <button (click)=\"dislikesong()\" id='pause'>DISLIKE</button>\n  \n</div>\n"
+module.exports = "<h2>{{station.station.name}}</h2>\n<div>\n  <p id='title'>Track: {{song.title}}</p>\n  <p id='artist'>Artist: {{song.artist}}</p>\n  <p id='album'>Album: {{song.album}}</p>\n  <p id='genre'>Genre: {{song.genre}}</p>\n  <p id='rating'>Rating: {{song.rating}}</p>\n\n  <form (ngSubmit)='editsong()'>\n    Rating:<input [(ngModel)]=\"song.rating\" type='number' name='rating'>  \n    <input type='submit' value='RATE'>\n  </form>\n</div>\n<div>\n  <button (click)=\"nexttrack()\" id='next'>NEXT TRACK</button>  \n  <button (click)=\"randomtrack()\" id='next'>Random</button>  \n  <button (click)=\"pauseaudio()\" id='pause'>Start/Stop Music</button>\n  <button (click)=\"likesong()\" id='pause'>LIKE</button>\n  <button (click)=\"dislikesong()\" id='pause'>DISLIKE</button>\n\n  \n</div>\n"
 
 /***/ }),
 
@@ -534,11 +533,9 @@ var StationComponent = /** @class */ (function () {
     StationComponent.prototype.nexttrack = function () {
         var _this = this;
         this.audio.pause();
-        console.log('asking service for next track');
         this.songservice.stationnext(this.station.station.id).subscribe(function (data) {
-            console.log('got some data', data);
             _this.song = data;
-            _this.startaudio();
+            _this.audio.play();
         });
     };
     StationComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([

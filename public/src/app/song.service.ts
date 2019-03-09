@@ -23,8 +23,7 @@ export class SongService {
     return this._http.get('/api/randomsong');
   }
   stationnext(tid){
-    console.log('asking django for a song')
-    return this._http.get('/api/station/'+tid+'/nextsong/');
+    return this._http.get('/api/station/'+tid+'/nexttrack');
   }
   editsong(sid,edits){
     return this._http.post('/api/'+sid, edits);

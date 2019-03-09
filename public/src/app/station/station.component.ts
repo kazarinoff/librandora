@@ -44,9 +44,9 @@ export class StationComponent implements OnInit {
   }
   nexttrack(){
     this.audio.pause()
-    console.log('asking service for next track')
     this.songservice.stationnext(this.station.station.id).subscribe((data:any)=>{
-      console.log('got some data',data);
-      this.song=data; this.startaudio()})
+      this.song=data;
+      this.audio.play();
+    })
   }
 }

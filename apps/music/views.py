@@ -1,7 +1,6 @@
 from django.shortcuts import render, HttpResponse, redirect
 from django.http import JsonResponse
 from apps.music.models import *
-import os
 import random
 import json
 from django.db.models import Count
@@ -107,34 +106,50 @@ def playlistindex(request):
 def playlistcreate(request):
     pass
 
-def scoresong(tid,sid):
-    score=0
-    scoredict={'points':{},'minuses':{}}
+def tscore(tid):
+    scoredict={'points':{'genres':{},'albums':{}},'minuses':{'genres':{},'albums':{}},'range':{'max':1,'min':0}}
     t=Station.objects.get(id=tid)
-    song=Song.objects.get(id=sid)
     songs=t.songs.all()
-    ds=t.dislikedsongs.all()
+    dislikedsongs=t.dislikedsongs.all()
     gs=t.songs.all().values('genre').annotate(Count('genre'))
     for i in gs:
-        scoredict['points'][i['genre']]=i['genre__count']
+        scoredict['points']['genres'][i['genre']]=i['genre__count']
     dgs=t.dislikedsongs.all().values('genre').annotate(Count('genre'))
     for h in dgs:
-        scoredict['minuses'][i['genre']]=i['genre__count']
-    if "song.genre" in scoredict['points']:
-        score+=scoredict['points'][song.genre]
-    if "song.genre" in scoredict['minuses']:
-        score-=scoredict['minuses'][song.genre]
+        scoredict['minuses']['genres'][i['genre']]=i['genre__count']
+    
+    albums=t.songs.all().values('album').annotate(Count('album'))
+    for i in albums:
+        scoredict['points']['albums'][i['album']]=i['album__count']
+    dalbums=t.dislikedsongs.all().values('genre').annotate(Count('album'))
+    for h in dalbums:
+        scoredict['minuses']['albums'][i['album']]=i['album__count']
+    scoredict['range']['max']=max(scoredict['points']['genres'].values()) + max(scoredict['points']['albums'].values())
+    scoredict['range']['min']=-1*(max(scoredict['minuses']['genres'].values()) + max(scoredict['minuses']['albums'].values()))
+    return scoredict
+
+def sscore(sid,tscore):
+    score=0
+    song=Song.objects.get(id=sid)
+    if song.genre in tscore['points']['genres']:
+        score+=tscore['points']['genres'][song.genre]
+    if song.genre in tscore['minuses']['genres']:
+        score-=tscore['points']['genres'][song.genre]
+    if song.album in tscore['points']['albums']:
+        score+=tscore['points']['albums'][song.album]
+    if song.album in tscore['minuses']['albums']:
+        score-=tscore['minuses']['albums'][song.album]
     return score
 
 def stationnextsong(request, tid):
-    randomnumber=random.randint(0,1)
     rn=Song.objects.last().id
-    songnumber=999
+    stationscore=tscore(tid)
+    matchvalue=random.randint(stationscore['range']['min'],stationscore['range']['max'])
+    songscore=999
     tries=0
-    print ('got here')
-    while (songnumber != randomnumber) and (tries < 1):
+    while (songscore != matchvalue) and (tries<100):
         sn=random.randint(1,rn)
-        songnumber=scoresong(tid,sn)
+        songscore=sscore(sn,stationscore)
+        print (f"Mathing value:{matchvalue}  tries:{tries}  songscore:{songscore}")
         tries +=1
-    print('sending the song django found')
     return JsonResponse(songdict(sn), safe=False)
