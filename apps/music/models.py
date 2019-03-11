@@ -142,20 +142,20 @@ class Stationlisting(models.Model):
     def __repr__(self):
         return (f"Station Listing #{self.id}: {self.song.title}, on {self.station.name}")
 
-def to_dict(self):
-    opts = self._meta
-    data = {}
-    for f in opts.concrete_fields + opts.many_to_many:
-        if isinstance(f, ManyToManyField):
-            if self.pk is None:
-                data[f.name] = []
-            else:
-                data[f.name] = list(f.value_from_object(self).values_list('pk', flat=True))
-        elif isinstance(f, models.DateTimeField):
-            if f.value_from_object(self) is not None:
-                data[f.name] = f.value_from_object(self).timestamp()
-            else:
-                data[f.name] = None
-        else:
-            data[f.name] = f.value_from_object(self)
-    return data
+# def to_dict(self):
+#     opts = self._meta
+#     data = {}
+#     for f in opts.concrete_fields + opts.many_to_many:
+#         if isinstance(f, ManyToManyField):
+#             if self.pk is None:
+#                 data[f.name] = []
+#             else:
+#                 data[f.name] = list(f.value_from_object(self).values_list('pk', flat=True))
+#         elif isinstance(f, models.DateTimeField):
+#             if f.value_from_object(self) is not None:
+#                 data[f.name] = f.value_from_object(self).timestamp()
+#             else:
+#                 data[f.name] = None
+#         else:
+#             data[f.name] = f.value_from_object(self)
+#     return data
