@@ -524,6 +524,7 @@ var StationComponent = /** @class */ (function () {
     };
     StationComponent.prototype.dislikesong = function () {
         this.songservice.dislikesong(this.station.station.id, this.song.id).subscribe(function (data) { });
+        this.nexttrack();
     };
     StationComponent.prototype.randomtrack = function () {
         var _this = this;
@@ -535,6 +536,7 @@ var StationComponent = /** @class */ (function () {
         this.audio.pause();
         this.songservice.stationnext(this.station.station.id).subscribe(function (data) {
             _this.song = data;
+            _this.audio.src = _this.song.location;
             _this.audio.play();
         });
     };

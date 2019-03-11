@@ -35,7 +35,8 @@ export class StationComponent implements OnInit {
     this.songservice.likesong(this.station.station.id,this.song.id).subscribe((data:any)=>{})
   }
   dislikesong(){
-    this.songservice.dislikesong(this.station.station.id,this.song.id).subscribe((data:any)=>{})
+    this.songservice.dislikesong(this.station.station.id,this.song.id).subscribe((data:any)=>{});
+    this.nexttrack();
   }
 
   randomtrack(){
@@ -46,6 +47,7 @@ export class StationComponent implements OnInit {
     this.audio.pause()
     this.songservice.stationnext(this.station.station.id).subscribe((data:any)=>{
       this.song=data;
+      this.audio.src=this.song.location
       this.audio.play();
     })
   }
