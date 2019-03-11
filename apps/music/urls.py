@@ -4,13 +4,13 @@ from . import views
 
 app_name = 'musicapp'
 urlpatterns = [
-    path('addtag',views.addtag,name='addtag'),
     path('station/<tid>/nexttrack',views.stationnextsong,name='stationnextsong'),
     path('randomsong',views.randomsong, name='randomsong'),
     path('playlist/new',views.playlistcreate,name='createpl'),
     path('playlist/all',views.playlistindex,name='indexpl'),
     path('playlist/<pid>',views.playlistshow,name='showpl'),
     path('song/<sid>/edit',views.editsong, name='editsong'),
+    path('song/<sid>/createtag',views.createtag,name='createtag'),
     path('song/<sid>',views.showsong, name='showsong'),
     path('genre/all',views.genreindex,name='indexgenre'),
     path('station/<tid>/likesong/<sid>',views.likesong,name='likesong'),

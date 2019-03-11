@@ -34,5 +34,7 @@ export class SongService {
   dislikesong(tid,sid){
     return this._http.get('/api/station/'+tid+'/dislikesong/'+sid);
   }
-
+  createtag(sid,tag){
+    return this._http.post('/api/song'+sid+'/createtag',tag)
+  }
 }
