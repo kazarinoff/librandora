@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from apps.music.models import *
 import random
 import json
-from django.db.models import Count
+from django.db import models
 
 def createtag(request,sid):
     if request.method=='POST':
@@ -29,7 +29,7 @@ def showsong(request,sid):
     return JsonResponse(song, safe=False)
 
 def genreindex(request):
-    g=Song.objects.values('genre').annotate(Count('genre'))
+    g=Song.objects.values('genre').annotate(models.Count('genre'))
     gi=[]
     for genre in g:
         gi.append(genre)

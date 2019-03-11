@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.fields.related import ManyToManyField
 
 class Song(models.Model):
     location=models.CharField(max_length=255)
@@ -125,8 +126,6 @@ class Station(models.Model):
         # scoredict['range']['min']=-1*(max(scoredict['minuses']['genres'].values()) + max(scoredict['minuses']['albums'].values()))
         return scoredict
 
-
-
 class Listing(models.Model):
     song=models.ForeignKey(Song, on_delete=models.CASCADE)
     playlist=models.ForeignKey(Playlist, on_delete=models.CASCADE)
@@ -135,7 +134,6 @@ class Listing(models.Model):
     def __repr__(self):
         return (f"Playlist Listing #{self.id}: {self.song.title}, on {self.playlist.name}")
 
-
 class Stationlisting(models.Model):
     song=models.ForeignKey(Song, on_delete=models.CASCADE)
     station=models.ForeignKey(Station, on_delete=models.CASCADE)
@@ -143,3 +141,21 @@ class Stationlisting(models.Model):
     updated_at=models.DateTimeField(auto_now_add=True)
     def __repr__(self):
         return (f"Station Listing #{self.id}: {self.song.title}, on {self.station.name}")
+
+def to_dict(self):
+    opts = self._meta
+    data = {}
+    for f in opts.concrete_fields + opts.many_to_many:
+        if isinstance(f, ManyToManyField):
+            if self.pk is None:
+                data[f.name] = []
+            else:
+                data[f.name] = list(f.value_from_object(self).values_list('pk', flat=True))
+        elif isinstance(f, models.DateTimeField):
+            if f.value_from_object(self) is not None:
+                data[f.name] = f.value_from_object(self).timestamp()
+            else:
+                data[f.name] = None
+        else:
+            data[f.name] = f.value_from_object(self)
+    return data
