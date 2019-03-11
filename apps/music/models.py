@@ -110,8 +110,6 @@ class Playlist(models.Model):
             relatedplaylists.append(h['id'])
         return {'playlist':pl,'songs':songids,'songlist':songlist,'relatedplaylists':relatedplaylists}
 
-
-
 class Station(models.Model):
     name=models.CharField(max_length=100)
     songs=models.ManyToManyField(Song, through='Stationlisting',related_name='stations')

@@ -34,16 +34,6 @@ def genreindex(request):
         gi.append(genre)
     return JsonResponse(gi, safe=False)
 
-# def getplaylistsong(request,pid):
-#     if request.method=='POST':
-#         songrequest=json.loads(request.body)
-#         sid=songrequest['id']
-#         s=Listing.objects.get(playlist=pid,song=sid).iterator().id
-#         return JsonResponse(songdict(s), safe=False)
-#     else:
-#         s=Playlist.objects.get(id=pid).songs.first().id
-#         return JsonResponse(songdict(s), safe=False)
-
 def playlistshow(request,pid):
     pl=Playlist.objects.get(id=pid)
     return JsonResponse(pl.pldict(), safe=False)
