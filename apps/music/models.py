@@ -75,7 +75,13 @@ class Song(models.Model):
         if self.artist in tscore['minuses']['artist']:
             score -=1
         return score
-
+    def songdict(self):
+        s=self.__dict__
+        tags=[]
+        for i in self.tags.all().values('id','name'):
+            tags.append({'id':i['id'],'name':i['name']})
+        s['tags']=tags
+        return s
 
 class Tag(models.Model):
     name=models.CharField(max_length=100)
@@ -91,6 +97,19 @@ class Playlist(models.Model):
     description=models.TextField()
     def __repr__(self):
         return (f"Playlist #{self.id}: {self.name}")
+    
+    def pldict(self):
+        pl=self.__dict__
+        songids={}
+        songlist=[]
+        relatedplaylists=[]
+        for i in self.songs.all().values('id'):
+            songlist.append(i['id'])
+            songids[i['id']]=0
+        for h in self.relatedplaylists.all().values('id'):
+            relatedplaylists.append(h['id'])
+        return {'playlist':pl,'songs':songids,'songlist':songlist,'relatedplaylists':relatedplaylists}
+
 
 
 class Station(models.Model):
@@ -100,6 +119,12 @@ class Station(models.Model):
     description=models.TextField()
     def __repr__(self):
         return (f"Station #{self.id}: {self.name}")
+
+    def tdict(self):
+        t=self.__dict__
+        s=self.songs.first()        
+        return {'station':t,'song':s.songdict()}
+
     def tscore(self):
         scoredict={'points':{'genres':{},'albums':{},'artist':{}},'minuses':{'genres':{},'albums':{},'artist':{}},'range':{'max':3,'min':-3}}
         songs=self.songs.all()
