@@ -75,7 +75,6 @@ def dislikesong(request,sid,tid):
 
 def songdict(sid):
     x=Song.objects.filter(id=sid).values()[0]
-    # x['tags']=list(Song.objects.get(id=sid).tags.all().values())
     return x
 
 def playlistdict(pid):
@@ -108,55 +107,19 @@ def playlistindex(request):
         pls.append(playlist)
     return JsonResponse(pls, safe=False)
 
+def tagindex(request):
+    t=Tag.objects.all().values('name')
+    ts=[]
+    for tag in t:
+        ts.append(tag)
+    return JsonResponse(ts, safe=False)
+
 def playlistcreate(request):
     pass
 
-def tscore(tid):
-    scoredict={'points':{'genres':{},'albums':{},'artist':{}},'minuses':{'genres':{},'albums':{},'artist':{}},'range':{'max':3,'min':-3}}
-    t=Station.objects.get(id=tid)
-    songs=t.songs.all()
-    dislikedsongs=t.dislikedsongs.all()
-    gs=t.songs.all().values('genre').annotate(Count('genre'))
-    for i in gs:
-        scoredict['points']['genres'][i['genre']]=i['genre__count']
-    dgs=t.dislikedsongs.all().values('genre').annotate(Count('genre'))
-    for h in dgs:
-        scoredict['minuses']['genres'][i['genre']]=i['genre__count']
-    albums=t.songs.all().values('album').annotate(Count('album'))
-    for i in albums:
-        scoredict['points']['albums'][i['album']]=i['album__count']
-    dalbums=t.dislikedsongs.all().values('genre').annotate(Count('album'))
-    for h in dalbums:
-        scoredict['minuses']['albums'][i['album']]=i['album__count']
-    artists=t.songs.all().values('artist').annotate(Count('artist'))
-    for i in artists:
-        scoredict['points']['artist'][i['artist']]=i['artist__count']
-    dartists=t.dislikedsongs.all().values('artist').annotate(Count('artist'))
-    for h in dalbums:
-        scoredict['minuses']['artist'][i['artist']]=i['artist__count']
-    # scoredict['range']['max']=max(scoredict['points']['genres'].values()) + max(scoredict['points']['albums'].values())
-    # scoredict['range']['min']=-1*(max(scoredict['minuses']['genres'].values()) + max(scoredict['minuses']['albums'].values()))
-    return scoredict
-
-def sscore(sid,tscore):
-    score=0
-    song=Song.objects.get(id=sid)
-    if song.genre in tscore['points']['genres']:
-        # score+=tscore['points']['genres'][song.genre]
-        score += 1
-    if song.genre in tscore['minuses']['genres']:
-        score -=1
-    if song.album in tscore['points']['albums']:
-        score += 1
-    if song.artist in tscore['points']['artist']:
-        score +=1
-    if song.artist in tscore['minuses']['artist']:
-        score -=1
-    return score
-
 def stationnextsong(request, tid):
     rn=Song.objects.last().id
-    stationscore=tscore(tid)
+    stationscore=Station.objects.get(id=tid).tscore()
     matcharray= [0,0,0,1,1,1,1,1,1,2]
     matchvalue=matcharray[random.randint(0,9)]
     songscore=-999
@@ -164,7 +127,7 @@ def stationnextsong(request, tid):
     while (songscore < matchvalue) and (tries<100):
         sn=random.randint(1,rn)
         try:
-            songscore=sscore(sn,stationscore)
+            songscore=Song.objects.get(id=sn).sscore(stationscore)
             print (f"Mathing value:{matchvalue}  tries:{tries}  songscore:{songscore}")
             tries +=1
         except:

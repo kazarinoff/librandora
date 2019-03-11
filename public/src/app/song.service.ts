@@ -37,4 +37,7 @@ export class SongService {
   createtag(sid,tag){
     return this._http.post('/api/song'+sid+'/createtag',tag)
   }
+  indextag(){
+    return this._http.get('/api/tag/all')
+  }
 }

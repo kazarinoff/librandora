@@ -59,35 +59,87 @@ class Song(models.Model):
     work=models.CharField(max_length=100)
     movement=models.CharField(max_length=100)
     def __repr__(self):
-        return ("Song #{}: {} by {}".format(self.id,self.title,self.artist))
+        return (f"Song #{self.id}: {self.title} by {self.artist}")
+    def sscore(self,tscore):
+        score=0
+        if self.genre in tscore['points']['genres']:
+            # score+=tscore['points']['genres'][song.genre]
+            score += 1
+        if self.genre in tscore['minuses']['genres']:
+            score -=1
+        if self.album in tscore['points']['albums']:
+            score += 1
+        if self.artist in tscore['points']['artist']:
+            score +=1
+        if self.artist in tscore['minuses']['artist']:
+            score -=1
+        return score
+
 
 class Tag(models.Model):
     name=models.CharField(max_length=100)
     songs = models.ManyToManyField(Song, related_name="tags")    
     relatives= models.ManyToManyField('self', related_name="relatedtags")
     def __repr__(self):
-        return ("Song: {}".format(self.name))
+        return (f"Song #{self.id}: {self.name}")
 
 class Playlist(models.Model):
     name=models.CharField(max_length=100)
     relatedplaylists= models.ManyToManyField('self', related_name="companionplaylists")
     songs=models.ManyToManyField(Song, through='Listing',related_name='playlists')
     description=models.TextField()
+    def __repr__(self):
+        return (f"Playlist #{self.id}: {self.name}")
+
 
 class Station(models.Model):
     name=models.CharField(max_length=100)
     songs=models.ManyToManyField(Song, through='Stationlisting',related_name='stations')
     dislikedsongs=models.ManyToManyField(Song, related_name='forbiddenstations')
     description=models.TextField()
+    def __repr__(self):
+        return (f"Station #{self.id}: {self.name}")
+    def tscore(self):
+        scoredict={'points':{'genres':{},'albums':{},'artist':{}},'minuses':{'genres':{},'albums':{},'artist':{}},'range':{'max':3,'min':-3}}
+        songs=self.songs.all()
+        dislikedsongs=self.dislikedsongs.all()
+        gs=self.songs.all().values('genre').annotate(models.Count('genre'))
+        for i in gs:
+            scoredict['points']['genres'][i['genre']]=i['genre__count']
+        dgs=self.dislikedsongs.all().values('genre').annotate(models.Count('genre'))
+        for h in dgs:
+            scoredict['minuses']['genres'][i['genre']]=i['genre__count']
+        albums=self.songs.all().values('album').annotate(models.Count('album'))
+        for i in albums:
+            scoredict['points']['albums'][i['album']]=i['album__count']
+        dalbums=self.dislikedsongs.all().values('genre').annotate(models.Count('album'))
+        for h in dalbums:
+            scoredict['minuses']['albums'][i['album']]=i['album__count']
+        artists=self.songs.all().values('artist').annotate(models.Count('artist'))
+        for i in artists:
+            scoredict['points']['artist'][i['artist']]=i['artist__count']
+        dartists=self.dislikedsongs.all().values('artist').annotate(models.Count('artist'))
+        for h in dalbums:
+            scoredict['minuses']['artist'][i['artist']]=i['artist__count']
+        # scoredict['range']['max']=max(scoredict['points']['genres'].values()) + max(scoredict['points']['albums'].values())
+        # scoredict['range']['min']=-1*(max(scoredict['minuses']['genres'].values()) + max(scoredict['minuses']['albums'].values()))
+        return scoredict
+
+
 
 class Listing(models.Model):
     song=models.ForeignKey(Song, on_delete=models.CASCADE)
     playlist=models.ForeignKey(Playlist, on_delete=models.CASCADE)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now_add=True)
+    def __repr__(self):
+        return (f"Playlist Listing #{self.id}: {self.song.title}, on {self.playlist.name}")
+
 
 class Stationlisting(models.Model):
     song=models.ForeignKey(Song, on_delete=models.CASCADE)
     station=models.ForeignKey(Station, on_delete=models.CASCADE)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now_add=True)
+    def __repr__(self):
+        return (f"Station Listing #{self.id}: {self.song.title}, on {self.station.name}")

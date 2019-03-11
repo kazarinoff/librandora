@@ -15,6 +15,7 @@ urlpatterns = [
     path('genre/all',views.genreindex,name='indexgenre'),
     path('station/<tid>/likesong/<sid>',views.likesong,name='likesong'),
     path('station/<tid>/dislikesong/<sid>',views.dislikesong,name='dislikesong'),
-    path('station/<tid>',views.stationshow,name='showstation')
+    path('station/<tid>',views.stationshow,name='showstation'),
+    path('tag/all',views.tagindex,name='indextag')
 
 ]
