@@ -4,8 +4,6 @@ from django.db.models.fields.related import ManyToManyField
 class Song(models.Model):
     location=models.CharField(max_length=255)
     album=models.CharField(max_length=100)
-    source=models.CharField(max_length=255)
-    bpm=models.CharField(max_length=100)
     compilation=models.CharField(max_length=100)
     rating=models.IntegerField(default=0)
     composer=models.CharField(max_length=100)
