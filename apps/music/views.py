@@ -92,6 +92,9 @@ def tagindex(request):
 def playlistcreate(request):
     pass
 
+def stationcreate(request):
+    pass
+
 def stationnextsong(request, tid):
     rn=Song.objects.last().id
     stationscore=Station.objects.get(id=tid).tscore()
@@ -110,22 +113,3 @@ def stationnextsong(request, tid):
             tries +=1
     return JsonResponse(song.songdict(), safe=False)
 
-def stationnextsonginternal(tid):
-    rn=Song.objects.last().id
-    stationscore=Station.objects.get(id=tid).tscore()
-    matcharray= [0,0,0,1,1,1,1,1,1,2]
-    matchvalue=matcharray[random.randint(0,9)]
-    songscore=-999
-    tries=0
-    while (songscore < matchvalue) and (tries<100) and (song.filetype!='mp3'):
-        sn=random.randint(9000,rn)
-        try:
-            song=Song.objects.get(id=sn)
-            songscore=song.sscore(stationscore)
-            tries +=1
-        except:
-            tries +=1
-    while (song.filetype!='mp3'):
-        sn=random.randint(9000,rn)
-        song=Song.objects.get(id=sn)
-    return song

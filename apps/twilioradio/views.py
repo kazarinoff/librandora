@@ -28,7 +28,7 @@ def playstation(request):
     resp = VoiceResponse()
     if not skipintro:
         resp.say(f"Thank you for chosing station number {dig}. At any point you can press 1 followed by the pound key to dislike and skip this song. Please be kind. The algorithm is still in development.", voice='woman',language='en-gb')
-    gather = Gather(action='/twilio/twiliodislike/'+str(dig)+'/'+str(sid), method='GET', numDigits='1')
+    gather = Gather(action='/twilio/dislike/'+str(dig)+'/'+str(sid), method='GET', numDigits='1')
     resp.append(gather)
     gather.play('http://5f1c429e.ngrok.io/twilio/playsong/'+str(sid))
     resp.redirect(f'/twilio/playstation?Digits={dig}&played=yes', method='GET')
@@ -56,3 +56,22 @@ def playsong(request,sid):
     response['Content-Length'] = os.path.getsize(fname )
     return response
 
+def stationnextsonginternal(tid):
+    rn=Song.objects.last().id
+    stationscore=Station.objects.get(id=tid).tscore()
+    matcharray= [0,0,0,1,1,1,1,1,1,2]
+    matchvalue=matcharray[random.randint(0,9)]
+    songscore=-999
+    tries=0
+    while (songscore < matchvalue) and (tries<100) and (song.filetype!='mp3'):
+        sn=random.randint(9000,rn)
+        try:
+            song=Song.objects.get(id=sn)
+            songscore=song.sscore(stationscore)
+            tries +=1
+        except:
+            tries +=1
+    while (song.filetype!='mp3'):
+        sn=random.randint(9000,rn)
+        song=Song.objects.get(id=sn)
+    return song
