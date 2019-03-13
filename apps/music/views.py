@@ -16,6 +16,9 @@ def createtag(request,sid):
             pass
     return JsonResponse({}, safe=False)
 
+def removetag(request):
+    pass
+
 def randomsong(request):
     rn=Song.objects.last().id
     sid=random.randint(1,rn)
@@ -42,12 +45,15 @@ def stationshow(request,tid):
     return JsonResponse(t.tdict(), safe=False)
 
 def likesong(request,sid,tid):
-    s=Song.objects.get(id=sid)
-    t=Station.objects.get(id=tid)
-    t.dislikedsongs.remove(s)
-    Stationlisting.objects.create(song=s,station=t)
-    print ('songliked')
-    return JsonResponse(s.songdict(), safe=False)
+    try:
+        s=Song.objects.get(id=sid)
+        t=Station.objects.get(id=tid)
+        t.dislikedsongs.remove(s)
+        Stationlisting.objects.create(song=s,station=t)
+        sd=s.songdict()
+    except:
+        sd={'msg':'could not like song'}
+    return JsonResponse(sd), safe=False)
 
 def dislikesong(request,sid,tid):
     s=Song.objects.get(id=sid)
@@ -59,7 +65,6 @@ def dislikesong(request,sid,tid):
         pass
     try:
         Station.objects.get(id=tid).dislikedsongs.add(Song.objects.get(id=sid))
-        print ('DISLLIKE')
     except:
         return JsonResponse({}, safe=False)
     return JsonResponse(s.songdict(), safe=False)
@@ -71,7 +76,6 @@ def editsong(request,sid):
         s.rating=edits['rating']
         s.save()
     except:
-        print('didnt get the song')
         return JsonResponse({}, safe=False)
     return JsonResponse(s.songdict(), safe=False)
 
@@ -112,4 +116,3 @@ def stationnextsong(request, tid):
         except:
             tries +=1
     return JsonResponse(song.songdict(), safe=False)
-
