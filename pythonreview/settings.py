@@ -37,6 +37,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    'apps.twilioradio',
     'apps.music',
     'django.contrib.admin',
     'django.contrib.auth',

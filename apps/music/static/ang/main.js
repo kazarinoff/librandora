@@ -436,6 +436,9 @@ var SongService = /** @class */ (function () {
     SongService.prototype.createtag = function (sid, tag) {
         return this._http.post('/api/song' + sid + '/createtag', tag);
     };
+    SongService.prototype.indextag = function () {
+        return this._http.get('/api/tag/all');
+    };
     SongService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
             providedIn: 'root'
@@ -500,6 +503,7 @@ var StationComponent = /** @class */ (function () {
         this.station = { "station": { "id": 1, "name": "funky", "description": "testing a radio playlist", "kind": "radio" }, 'songlist': [], 'song': { "id": 9709, "location": "../../music/MusicBee\\Ripped Files\\De La Soul\\And the Anonymous Nobody\\02 Royalty Capes.mp3", "album": "And the Anonymous Nobody", "source": "", "bpm": "", "compilation": "", "rating": 0, "composer": "", "copyrightdate": "", "encodedby": "", "lyricist": "", "length": "", "media": "", "mood": "", "title": "Royalty Capes", "version": "", "artist": "De La Soul", "albumartist": "De La Soul", "conductor": "", "arranger": "", "discnumber": "", "tracknumber": "2/17", "author": "", "isrc": "", "discsubtitle": "", "language": "", "genre": "Hip Hop", "date": "2016", "originaldate": "", "performer": "", "organization": "", "musicbrainz_trackid": "", "website": "", "replaygain": "", "replaygainpeak": "", "musicbrainz_artistid": "", "musicbrainz_albumid": "", "musicbrainz_albumartistid": "", "musicbrainz_trmid": "", "musicip_puid": "", "musicip_fingerprint": "", "musicbrainz_albumstatus": "", "musicbrainz_albumtype": "", "releasecountry": "", "musicbrainz_discid": "", "asin": "", "barcode": "", "catalognumber": "", "musicbrainz_releasetrackid": "", "musicbrainz_releasegroupid": "", "performer2": "", "musicbrainz_workid": "", "acoustid_fingerprint": "", "acoustid_id": "", "playbackgap": "", "comment": "", "work": "", "movement": "" } };
         this.audio = new Audio();
         this.tag = { name: '' };
+        this.alltags = [];
     }
     StationComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -510,6 +514,7 @@ var StationComponent = /** @class */ (function () {
                 _this.startaudio();
             });
         });
+        this.songservice.indextag().subscribe(function (data) { _this.alltags = data; });
     };
     StationComponent.prototype.startaudio = function () {
         this.audio.src = this.song.location;

@@ -22,6 +22,7 @@ from django.views.generic.base import TemplateView
 
 urlpatterns = [
     path('api/', include('apps.music.urls', namespace='musicapp')),
+    path('twilio/', include('apps.twilioradio.urls', namespace='twilio')),
     re_path(r'^music/(?P<path>.*)$', serve, {
             'document_root': '/users/gameshark9/music',
         }),

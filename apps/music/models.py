@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models.fields.related import ManyToManyField
 
 class Song(models.Model):
+    filetype=models.CharField(max_length=20)
     location=models.CharField(max_length=255)
     album=models.CharField(max_length=100)
     compilation=models.CharField(max_length=100)
@@ -74,7 +75,10 @@ class Song(models.Model):
             score -=1
         return score
     def songdict(self):
-        s=self.__dict__
+        s={'location':self.location,'album':self.album,'rating':self.rating,'length':self.length,
+        'mood':self.mood,'title':self.title,'artist':self.artist, 'albumartist':self.albumartist, 
+        'tracknumber':self.tracknumber,'genre':self.genre,'date':self.date,
+        'originaldate':self.originaldate,'performer':self.performer,'comment':self.comment}
         tags=[]
         for i in self.tags.all().values('id','name'):
             tags.append({'id':i['id'],'name':i['name']})
@@ -97,7 +101,7 @@ class Playlist(models.Model):
         return (f"Playlist #{self.id}: {self.name}")
     
     def pldict(self):
-        pl=self.__dict__
+        pl={'name':self.name,'description':self.description}
         songids={}
         songlist=[]
         relatedplaylists=[]
@@ -117,7 +121,7 @@ class Station(models.Model):
         return (f"Station #{self.id}: {self.name}")
 
     def tdict(self):
-        t=self.__dict__
+        t={'name':self.name,'description':self.description}
         s=self.songs.first()        
         return {'station':t,'song':s.songdict()}
 

@@ -1,8 +1,7 @@
 from django.shortcuts import render, HttpResponse, redirect
 from django.http import JsonResponse
 from apps.music.models import *
-import random
-import json
+import random, json, os
 from django.db import models
 
 def createtag(request,sid):
@@ -39,7 +38,7 @@ def playlistshow(request,pid):
     return JsonResponse(pl.pldict(), safe=False)
 
 def stationshow(request,tid):
-    t=Station.objects.filter(id=tid).values()[0]
+    t=Station.objects.get(id=tid)
     return JsonResponse(t.tdict(), safe=False)
 
 def likesong(request,sid,tid):
@@ -110,3 +109,23 @@ def stationnextsong(request, tid):
         except:
             tries +=1
     return JsonResponse(song.songdict(), safe=False)
+
+def stationnextsonginternal(tid):
+    rn=Song.objects.last().id
+    stationscore=Station.objects.get(id=tid).tscore()
+    matcharray= [0,0,0,1,1,1,1,1,1,2]
+    matchvalue=matcharray[random.randint(0,9)]
+    songscore=-999
+    tries=0
+    while (songscore < matchvalue) and (tries<100) and (song.filetype!='mp3'):
+        sn=random.randint(9000,rn)
+        try:
+            song=Song.objects.get(id=sn)
+            songscore=song.sscore(stationscore)
+            tries +=1
+        except:
+            tries +=1
+    while (song.filetype!='mp3'):
+        sn=random.randint(9000,rn)
+        song=Song.objects.get(id=sn)
+    return song
