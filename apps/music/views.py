@@ -1,4 +1,3 @@
-from django.shortcuts import render, HttpResponse, redirect
 from django.http import JsonResponse
 from apps.music.models import *
 import random, json, os
