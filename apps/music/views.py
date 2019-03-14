@@ -52,7 +52,7 @@ def likesong(request,sid,tid):
         sd=s.songdict()
     except:
         sd={'msg':'could not like song'}
-    return JsonResponse(sd), safe=False)
+    return JsonResponse(sd, safe=False)
 
 def dislikesong(request,sid,tid):
     s=Song.objects.get(id=sid)
