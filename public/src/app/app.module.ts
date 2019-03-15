@@ -14,7 +14,7 @@ import { StationComponent } from './station/station.component';
     AppComponent,
     PlaylistComponent,
     RadioComponent,
-    StationComponent
+    StationComponent,
   ],
   imports: [
     BrowserModule,

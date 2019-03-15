@@ -128,7 +128,8 @@ class Station(models.Model):
         return {'station':t,'song':s.songdict()}
 
     def tscore(self):
-        scoredict={'points':{'genres':{},'albums':{},'artist':{}},'minuses':{'genres':{},'albums':{},'artist':{}},'range':{'max':3,'min':-3}}
+        scoredict={'points':{'genres':{},'albums':{},'artist':{},'tags':{}},'minuses':{'genres':{},'albums':{},'artist':{}},'range':{'max':3,'min':-3}}
+        # tags=Tag.objects.filter(songs__stations__id=self.id)
         songs=self.songs.all()
         dislikedsongs=self.dislikedsongs.all()
         gs=self.songs.all().values('genre').annotate(models.Count('genre'))

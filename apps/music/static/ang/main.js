@@ -172,7 +172,7 @@ var AppModule = /** @class */ (function () {
                 _app_component__WEBPACK_IMPORTED_MODULE_5__["AppComponent"],
                 _playlist_playlist_component__WEBPACK_IMPORTED_MODULE_8__["PlaylistComponent"],
                 _radio_radio_component__WEBPACK_IMPORTED_MODULE_9__["RadioComponent"],
-                _station_station_component__WEBPACK_IMPORTED_MODULE_10__["StationComponent"]
+                _station_station_component__WEBPACK_IMPORTED_MODULE_10__["StationComponent"],
             ],
             imports: [
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_1__["BrowserModule"],
@@ -477,7 +477,7 @@ module.exports = ".tagborder {\r\n    border: 1pt solid black;\r\n    background
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<h2>{{station.station.name}}</h2>\r\n<div>\r\n  <p id='title'>Track: {{song.title}}</p>\r\n  <p id='artist'>Artist: {{song.artist}}</p>\r\n  <p id='album'>Album: {{song.album}}</p>\r\n  <p id='genre'>Genre: {{song.genre}}</p>\r\n  <p id='rating'>Rating: {{song.rating}}</p>\r\n\r\n  <form (ngSubmit)='editsong()'>\r\n    Rating:<input [(ngModel)]=\"song.rating\" type='range' min='0' max='10' style='width:15%;' name='rating'>  \r\n    <input type='submit' value='RATE'>\r\n  </form>\r\n</div>\r\n<div>\r\n  <button (click)=\"nexttrack()\" id='next'>NEXT TRACK</button>  \r\n  <button (click)=\"randomtrack()\" id='next'>Random</button>  \r\n  <button (click)=\"pauseaudio()\" id='pause'>Start/Stop Music</button>\r\n  <button (click)=\"likesong()\" id='pause'>LIKE</button>\r\n  <button (click)=\"dislikesong()\" id='pause'>DISLIKE</button>\r\n\r\n\r\n</div>\r\n<div>\r\n<button class='btn btn-outline-primary' (click)=\"switchtag(x)\" [ngClass]=\"{'tagborder': i.songtagged}\" *ngFor=\"let i of alltags;let x=index\">{{i.name}}</button>\r\n<form (ngSubmit)='createtag()'>\r\n  <input [(ngModel)]=\"tag.name\" type='text' style='' name='tag'>  \r\n  <input type='submit' value='#TAG'>\r\n</form>\r\n\r\n</div>\r\n"
+module.exports = "<h2>{{station.station.name}}</h2>\r\n<div>\r\n  <audio  #radioplayer [src]=\"song.location\" (ended)=\"nexttrack()\" autoplay='true' name='audioplayer' controls></audio>\r\n</div>\r\n<div>\r\n  <p id='title'>Track: {{song.title}}</p>\r\n  <p id='artist'>Artist: {{song.artist}}</p>\r\n  <p id='album'>Album: {{song.album}}</p>\r\n  <p id='genre'>Genre: {{song.genre}}</p>\r\n  <p id='rating'>Rating: {{song.rating}}</p>\r\n\r\n  <form (ngSubmit)='editsong()'>\r\n    Rating:<input [(ngModel)]=\"song.rating\" type='range' min='0' max='10' style='width:15%;' name='rating'>  \r\n    <input type='submit' value='RATE'>\r\n  </form>\r\n</div>\r\n<div>\r\n  <button (click)=\"nexttrack()\" id='next'>NEXT TRACK</button>  \r\n  <button (click)=\"randomtrack()\" id='next'>Random</button>  \r\n  <button (click)=\"pauseaudio()\" id='pause'>Start/Stop Music</button>\r\n  <button (click)=\"likesong()\" id='pause'>LIKE</button>\r\n  <button (click)=\"dislikesong()\" id='pause'>DISLIKE</button>\r\n\r\n\r\n</div>\r\n<div>\r\n<button style='padding:5px;' class='btn btn-outline-primary' (click)=\"switchtag(x)\" [ngClass]=\"{'tagborder': i.songtagged}\" *ngFor=\"let i of alltags;let x=index\">{{i.name}}</button>\r\n<form (ngSubmit)='createtag()'>\r\n  <input [(ngModel)]=\"tag.name\" type='text' style='' name='tag'>  \r\n  <input type='submit' value='#TAG'>\r\n</form>\r\n\r\n</div>\r\n"
 
 /***/ }),
 
@@ -504,11 +504,8 @@ var StationComponent = /** @class */ (function () {
         this.songservice = songservice;
         this._route = _route;
         this._router = _router;
-        this.title = 'public';
         this.song = { "id": 3215, "location": "../../music/itunes/itunes media/music\\Dr. Dre\\2001\\11 The Next Episode.m4a", "album": "2001", "rating": 0, "length": "", "mood": "", "title": "The Next Episode", "artist": "Dr. Dre", "albumartist": "", "tracknumber": "", "genre": "Rap", "date": "", "originaldate": "1999", "performer": "", "comment": "", "tags": [] };
-        this.songindex = 0;
         this.station = { "station": { "id": 1, "name": "funky", "description": "testing a radio playlist" }, 'songlist': [], 'song': { "id": 3215, "location": "../../music/itunes/itunes media/music\\Dr. Dre\\2001\\11 The Next Episode.m4a", "album": "2001", "rating": 0, "length": "", "mood": "", "title": "The Next Episode", "artist": "Dr. Dre", "albumartist": "", "tracknumber": "", "genre": "Rap", "date": "", "originaldate": "1999", "performer": "", "comment": "", "tags": [] } };
-        this.audio = new Audio();
         this.tag = { name: '' };
         this.alltags = [{ 'name': '', 'id': 1, 'songtagged': false }];
     }
@@ -523,9 +520,18 @@ var StationComponent = /** @class */ (function () {
         });
         this.songservice.indextag().subscribe(function (data) { _this.alltags = data; _this.checktags(); });
     };
+    StationComponent.prototype.pauseaudio = function () {
+        var radio = this.radioplayer.nativeElement;
+        if (radio.paused) {
+            radio.play();
+        }
+        else {
+            radio.pause();
+        }
+    };
     StationComponent.prototype.startaudio = function () {
-        this.audio.src = this.song.location;
-        this.audio.play();
+        var radio = this.radioplayer.nativeElement;
+        radio.play();
     };
     StationComponent.prototype.checktags = function () {
         var thesong = this.song;
@@ -549,14 +555,6 @@ var StationComponent = /** @class */ (function () {
             this.songservice.addtag(this.song.id, this.alltags[x].id).subscribe(function (data) { });
         }
     };
-    StationComponent.prototype.pauseaudio = function () {
-        if (this.audio.paused) {
-            this.audio.play();
-        }
-        else {
-            this.audio.pause();
-        }
-    };
     StationComponent.prototype.likesong = function () {
         this.songservice.likesong(this.station.station.id, this.song.id).subscribe(function (data) { });
     };
@@ -569,16 +567,18 @@ var StationComponent = /** @class */ (function () {
     };
     StationComponent.prototype.randomtrack = function () {
         var _this = this;
-        this.audio.pause();
-        this.songservice.randomsong().subscribe(function (data) { _this.song = data; _this.startaudio(); _this.checktags(); });
+        var radio = this.radioplayer.nativeElement;
+        radio.pause();
+        this.songservice.randomsong().subscribe(function (data) { _this.song = data; radio.play(); _this.checktags(); });
     };
     StationComponent.prototype.nexttrack = function () {
         var _this = this;
-        this.audio.pause();
+        var radio = this.radioplayer.nativeElement;
+        radio.pause();
         this.songservice.stationnext(this.station.station.id).subscribe(function (data) {
             _this.song = data;
-            _this.audio.src = _this.song.location;
-            _this.audio.play();
+            radio.play();
+            console.log('thereadio:', radio);
             _this.checktags();
         });
     };
@@ -589,6 +589,10 @@ var StationComponent = /** @class */ (function () {
             _this.songservice.indextag().subscribe(function (data) { _this.alltags = data; _this.checktags(); });
         });
     };
+    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ViewChild"])('radioplayer'),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"])
+    ], StationComponent.prototype, "radioplayer", void 0);
     StationComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
             selector: 'app-station',
