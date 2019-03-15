@@ -22,4 +22,9 @@
 </div>
 <div>
 <button class='btn btn-outline-primary' (click)="switchtag(x)" [ngClass]="{'tagborder': i.songtagged}" *ngFor="let i of alltags;let x=index">{{i.name}}</button>
+<form (ngSubmit)='createtag()'>
+  <input [(ngModel)]="tag.name" type='text' style='' name='tag'>  
+  <input type='submit' value='#TAG'>
+</form>
+
 </div>

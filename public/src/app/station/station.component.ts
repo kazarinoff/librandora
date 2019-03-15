@@ -74,7 +74,10 @@ export class StationComponent implements OnInit {
       this.checktags()
     })
   }
-  addtag(){
-    this.songservice.createtag(this.song.id,this.tag).subscribe((data:any)=>{this.song=data})
+  createtag(){
+    this.songservice.createtag(this.song.id,this.tag).subscribe((data:any)=>{
+      this.song=data;
+      this.songservice.indextag().subscribe((data:any)=>{this.alltags=data; this.checktags()});
+    })
   }
 }

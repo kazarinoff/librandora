@@ -104,7 +104,7 @@ def playlistindex(request):
     return JsonResponse(pls, safe=False)
 
 def tagindex(request):
-    t=Tag.objects.all()
+    t=Tag.objects.all().order_by('name')
     ts=[]
     for i in t:
         ts.append(i.tagdict())

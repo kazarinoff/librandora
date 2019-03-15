@@ -435,7 +435,7 @@ var SongService = /** @class */ (function () {
         return this._http.get('/api/station/' + tid + '/dislikesong/' + sid);
     };
     SongService.prototype.createtag = function (sid, tag) {
-        return this._http.post('/api/song' + sid + '/createtag', tag);
+        return this._http.post('/api/song/' + sid + '/createtag', tag);
     };
     SongService.prototype.indextag = function () {
         return this._http.get('/api/tag/all');
@@ -477,7 +477,7 @@ module.exports = ".tagborder {\r\n    border: 1pt solid black;\r\n    background
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<h2>{{station.station.name}}</h2>\r\n<div>\r\n  <p id='title'>Track: {{song.title}}</p>\r\n  <p id='artist'>Artist: {{song.artist}}</p>\r\n  <p id='album'>Album: {{song.album}}</p>\r\n  <p id='genre'>Genre: {{song.genre}}</p>\r\n  <p id='rating'>Rating: {{song.rating}}</p>\r\n\r\n  <form (ngSubmit)='editsong()'>\r\n    Rating:<input [(ngModel)]=\"song.rating\" type='range' min='0' max='10' style='width:15%;' name='rating'>  \r\n    <input type='submit' value='RATE'>\r\n  </form>\r\n</div>\r\n<div>\r\n  <button (click)=\"nexttrack()\" id='next'>NEXT TRACK</button>  \r\n  <button (click)=\"randomtrack()\" id='next'>Random</button>  \r\n  <button (click)=\"pauseaudio()\" id='pause'>Start/Stop Music</button>\r\n  <button (click)=\"likesong()\" id='pause'>LIKE</button>\r\n  <button (click)=\"dislikesong()\" id='pause'>DISLIKE</button>\r\n\r\n\r\n</div>\r\n<div>\r\n<button class='btn btn-outline-primary' (click)=\"switchtag(x)\" [ngClass]=\"{'tagborder': i.songtagged}\" *ngFor=\"let i of alltags;let x=index\">{{i.name}}</button>\r\n</div>\r\n"
+module.exports = "<h2>{{station.station.name}}</h2>\r\n<div>\r\n  <p id='title'>Track: {{song.title}}</p>\r\n  <p id='artist'>Artist: {{song.artist}}</p>\r\n  <p id='album'>Album: {{song.album}}</p>\r\n  <p id='genre'>Genre: {{song.genre}}</p>\r\n  <p id='rating'>Rating: {{song.rating}}</p>\r\n\r\n  <form (ngSubmit)='editsong()'>\r\n    Rating:<input [(ngModel)]=\"song.rating\" type='range' min='0' max='10' style='width:15%;' name='rating'>  \r\n    <input type='submit' value='RATE'>\r\n  </form>\r\n</div>\r\n<div>\r\n  <button (click)=\"nexttrack()\" id='next'>NEXT TRACK</button>  \r\n  <button (click)=\"randomtrack()\" id='next'>Random</button>  \r\n  <button (click)=\"pauseaudio()\" id='pause'>Start/Stop Music</button>\r\n  <button (click)=\"likesong()\" id='pause'>LIKE</button>\r\n  <button (click)=\"dislikesong()\" id='pause'>DISLIKE</button>\r\n\r\n\r\n</div>\r\n<div>\r\n<button class='btn btn-outline-primary' (click)=\"switchtag(x)\" [ngClass]=\"{'tagborder': i.songtagged}\" *ngFor=\"let i of alltags;let x=index\">{{i.name}}</button>\r\n<form (ngSubmit)='createtag()'>\r\n  <input [(ngModel)]=\"tag.name\" type='text' style='' name='tag'>  \r\n  <input type='submit' value='#TAG'>\r\n</form>\r\n\r\n</div>\r\n"
 
 /***/ }),
 
@@ -582,9 +582,12 @@ var StationComponent = /** @class */ (function () {
             _this.checktags();
         });
     };
-    StationComponent.prototype.addtag = function () {
+    StationComponent.prototype.createtag = function () {
         var _this = this;
-        this.songservice.createtag(this.song.id, this.tag).subscribe(function (data) { _this.song = data; });
+        this.songservice.createtag(this.song.id, this.tag).subscribe(function (data) {
+            _this.song = data;
+            _this.songservice.indextag().subscribe(function (data) { _this.alltags = data; _this.checktags(); });
+        });
     };
     StationComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
