@@ -74,7 +74,6 @@ export class StationComponent implements OnInit {
     this.songservice.stationnext(this.station.station.id).subscribe((data:any)=>{
       this.song=data;
       radio.play();
-      console.log('thereadio:',radio)
       this.checktags()
     })
   }
