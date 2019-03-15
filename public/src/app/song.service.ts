@@ -16,7 +16,8 @@ export class SongService {
   stationshow(tid){
     return this._http.get('/api/station/'+tid)
   }
-  songshow(sid){
+  songshow(sid,edits?){
+    if (edits){return this._http.post('/api/song/'+sid, edits)};
     return this._http.get('/api/song/'+sid)
   }
   randomsong(){
@@ -24,9 +25,6 @@ export class SongService {
   }
   stationnext(tid){
     return this._http.get('/api/station/'+tid+'/nexttrack');
-  }
-  editsong(sid,edits){
-    return this._http.post('/api/'+sid, edits);
   }
   likesong(tid,sid){
     return this._http.get('/api/station/'+tid+'/likesong/'+sid);
@@ -40,4 +38,11 @@ export class SongService {
   indextag(){
     return this._http.get('/api/tag/all')
   }
+  addtag(sid,tgid){
+    return this._http.get('/api/song/'+sid+'/add/'+tgid);
+  }
+  removetag(sid,tgid){
+    return this._http.get('/api/song/'+sid+'/remove/'+tgid);
+  }
+
 }

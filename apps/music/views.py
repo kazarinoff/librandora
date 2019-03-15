@@ -15,8 +15,24 @@ def createtag(request,sid):
             pass
     return JsonResponse({}, safe=False)
 
-def removetag(request):
-    pass
+def addtag(request,sid,tgid):
+    try:
+        tag=Tag.objects.get(id=tgid)
+        s=Song.objects.get(id=sid)
+        tag.songs.add(s)
+    except:
+        s=Song.objects.first()
+    return JsonResponse(s.songdict(), safe=False)
+
+
+def removetag(request,sid,tgid):
+    try:
+        tag=Tag.objects.get(id=tgid)
+        s=Song.objects.get(id=sid)
+        tag.songs.remove(s)
+    except:
+        s=Song.objects.first()
+    return JsonResponse(s.songdict(), safe=False)
 
 def randomsong(request):
     rn=Song.objects.last().id
@@ -25,6 +41,8 @@ def randomsong(request):
     return JsonResponse(song.songdict(), safe=False)
 
 def showsong(request,sid):
+    if request.method=='POST':
+        return editsong(request,sid)
     song=Song.objects.get(id=sid)
     return JsonResponse(song.songdict(), safe=False)
 
@@ -86,10 +104,10 @@ def playlistindex(request):
     return JsonResponse(pls, safe=False)
 
 def tagindex(request):
-    t=Tag.objects.all().values('name')
+    t=Tag.objects.all()
     ts=[]
-    for tag in t:
-        ts.append(tag)
+    for i in t:
+        ts.append(i.tagdict())
     return JsonResponse(ts, safe=False)
 
 def playlistcreate(request):

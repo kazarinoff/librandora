@@ -369,7 +369,7 @@ var RadioComponent = /** @class */ (function () {
         }
     };
     RadioComponent.prototype.editsong = function () {
-        this.songservice.editsong(this.song.id, { rating: this.song.rating }).subscribe(function (data) { });
+        this.songservice.songshow(this.song.id, { rating: this.song.rating }).subscribe(function (data) { });
     };
     RadioComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
@@ -415,7 +415,11 @@ var SongService = /** @class */ (function () {
     SongService.prototype.stationshow = function (tid) {
         return this._http.get('/api/station/' + tid);
     };
-    SongService.prototype.songshow = function (sid) {
+    SongService.prototype.songshow = function (sid, edits) {
+        if (edits) {
+            return this._http.post('/api/song/' + sid, edits);
+        }
+        ;
         return this._http.get('/api/song/' + sid);
     };
     SongService.prototype.randomsong = function () {
@@ -423,9 +427,6 @@ var SongService = /** @class */ (function () {
     };
     SongService.prototype.stationnext = function (tid) {
         return this._http.get('/api/station/' + tid + '/nexttrack');
-    };
-    SongService.prototype.editsong = function (sid, edits) {
-        return this._http.post('/api/' + sid, edits);
     };
     SongService.prototype.likesong = function (tid, sid) {
         return this._http.get('/api/station/' + tid + '/likesong/' + sid);
@@ -438,6 +439,12 @@ var SongService = /** @class */ (function () {
     };
     SongService.prototype.indextag = function () {
         return this._http.get('/api/tag/all');
+    };
+    SongService.prototype.addtag = function (sid, tgid) {
+        return this._http.get('/api/song/' + sid + '/add/' + tgid);
+    };
+    SongService.prototype.removetag = function (sid, tgid) {
+        return this._http.get('/api/song/' + sid + '/remove/' + tgid);
     };
     SongService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
@@ -459,7 +466,7 @@ var SongService = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL3N0YXRpb24vc3RhdGlvbi5jb21wb25lbnQuY3NzIn0= */"
+module.exports = ".tagborder {\r\n    border: 1pt solid black;\r\n    background-color: red;\r\n}\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvc3RhdGlvbi9zdGF0aW9uLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7SUFDSSx1QkFBdUI7SUFDdkIscUJBQXFCO0FBQ3pCIiwiZmlsZSI6InNyYy9hcHAvc3RhdGlvbi9zdGF0aW9uLmNvbXBvbmVudC5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyIudGFnYm9yZGVyIHtcclxuICAgIGJvcmRlcjogMXB0IHNvbGlkIGJsYWNrO1xyXG4gICAgYmFja2dyb3VuZC1jb2xvcjogcmVkO1xyXG59Il19 */"
 
 /***/ }),
 
@@ -470,7 +477,7 @@ module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<h2>{{station.station.name}}</h2>\r\n<div>\r\n  <p id='title'>Track: {{song.title}}</p>\r\n  <p id='artist'>Artist: {{song.artist}}</p>\r\n  <p id='album'>Album: {{song.album}}</p>\r\n  <p id='genre'>Genre: {{song.genre}}</p>\r\n  <p id='rating'>Rating: {{song.rating}}</p>\r\n\r\n  <form (ngSubmit)='editsong()'>\r\n    Rating:<input [(ngModel)]=\"song.rating\" type='number' name='rating'>  \r\n    <input type='submit' value='RATE'>\r\n  </form>\r\n</div>\r\n<div>\r\n  <button (click)=\"nexttrack()\" id='next'>NEXT TRACK</button>  \r\n  <button (click)=\"randomtrack()\" id='next'>Random</button>  \r\n  <button (click)=\"pauseaudio()\" id='pause'>Start/Stop Music</button>\r\n  <button (click)=\"likesong()\" id='pause'>LIKE</button>\r\n  <button (click)=\"dislikesong()\" id='pause'>DISLIKE</button>\r\n\r\n  \r\n</div>\r\n"
+module.exports = "<h2>{{station.station.name}}</h2>\r\n<div>\r\n  <p id='title'>Track: {{song.title}}</p>\r\n  <p id='artist'>Artist: {{song.artist}}</p>\r\n  <p id='album'>Album: {{song.album}}</p>\r\n  <p id='genre'>Genre: {{song.genre}}</p>\r\n  <p id='rating'>Rating: {{song.rating}}</p>\r\n\r\n  <form (ngSubmit)='editsong()'>\r\n    Rating:<input [(ngModel)]=\"song.rating\" type='range' min='0' max='10' style='width:15%;' name='rating'>  \r\n    <input type='submit' value='RATE'>\r\n  </form>\r\n</div>\r\n<div>\r\n  <button (click)=\"nexttrack()\" id='next'>NEXT TRACK</button>  \r\n  <button (click)=\"randomtrack()\" id='next'>Random</button>  \r\n  <button (click)=\"pauseaudio()\" id='pause'>Start/Stop Music</button>\r\n  <button (click)=\"likesong()\" id='pause'>LIKE</button>\r\n  <button (click)=\"dislikesong()\" id='pause'>DISLIKE</button>\r\n\r\n\r\n</div>\r\n<div>\r\n<button class='btn btn-outline-primary' (click)=\"switchtag(x)\" [ngClass]=\"{'tagborder': i.songtagged}\" *ngFor=\"let i of alltags;let x=index\">{{i.name}}</button>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -498,12 +505,12 @@ var StationComponent = /** @class */ (function () {
         this._route = _route;
         this._router = _router;
         this.title = 'public';
-        this.song = { "id": 9709, "location": "../../music/MusicBee\\Ripped Files\\De La Soul\\And the Anonymous Nobody\\02 Royalty Capes.mp3", "album": "And the Anonymous Nobody", "source": "", "bpm": "", "compilation": "", "rating": 0, "composer": "", "copyrightdate": "", "encodedby": "", "lyricist": "", "length": "", "media": "", "mood": "", "title": "Royalty Capes", "version": "", "artist": "De La Soul", "albumartist": "De La Soul", "conductor": "", "arranger": "", "discnumber": "", "tracknumber": "2/17", "author": "", "isrc": "", "discsubtitle": "", "language": "", "genre": "Hip Hop", "date": "2016", "originaldate": "", "performer": "", "organization": "", "musicbrainz_trackid": "", "website": "", "replaygain": "", "replaygainpeak": "", "musicbrainz_artistid": "", "musicbrainz_albumid": "", "musicbrainz_albumartistid": "", "musicbrainz_trmid": "", "musicip_puid": "", "musicip_fingerprint": "", "musicbrainz_albumstatus": "", "musicbrainz_albumtype": "", "releasecountry": "", "musicbrainz_discid": "", "asin": "", "barcode": "", "catalognumber": "", "musicbrainz_releasetrackid": "", "musicbrainz_releasegroupid": "", "performer2": "", "musicbrainz_workid": "", "acoustid_fingerprint": "", "acoustid_id": "", "playbackgap": "", "comment": "", "work": "", "movement": "" };
+        this.song = { "id": 3215, "location": "../../music/itunes/itunes media/music\\Dr. Dre\\2001\\11 The Next Episode.m4a", "album": "2001", "rating": 0, "length": "", "mood": "", "title": "The Next Episode", "artist": "Dr. Dre", "albumartist": "", "tracknumber": "", "genre": "Rap", "date": "", "originaldate": "1999", "performer": "", "comment": "", "tags": [] };
         this.songindex = 0;
-        this.station = { "station": { "id": 1, "name": "funky", "description": "testing a radio playlist", "kind": "radio" }, 'songlist': [], 'song': { "id": 9709, "location": "../../music/MusicBee\\Ripped Files\\De La Soul\\And the Anonymous Nobody\\02 Royalty Capes.mp3", "album": "And the Anonymous Nobody", "source": "", "bpm": "", "compilation": "", "rating": 0, "composer": "", "copyrightdate": "", "encodedby": "", "lyricist": "", "length": "", "media": "", "mood": "", "title": "Royalty Capes", "version": "", "artist": "De La Soul", "albumartist": "De La Soul", "conductor": "", "arranger": "", "discnumber": "", "tracknumber": "2/17", "author": "", "isrc": "", "discsubtitle": "", "language": "", "genre": "Hip Hop", "date": "2016", "originaldate": "", "performer": "", "organization": "", "musicbrainz_trackid": "", "website": "", "replaygain": "", "replaygainpeak": "", "musicbrainz_artistid": "", "musicbrainz_albumid": "", "musicbrainz_albumartistid": "", "musicbrainz_trmid": "", "musicip_puid": "", "musicip_fingerprint": "", "musicbrainz_albumstatus": "", "musicbrainz_albumtype": "", "releasecountry": "", "musicbrainz_discid": "", "asin": "", "barcode": "", "catalognumber": "", "musicbrainz_releasetrackid": "", "musicbrainz_releasegroupid": "", "performer2": "", "musicbrainz_workid": "", "acoustid_fingerprint": "", "acoustid_id": "", "playbackgap": "", "comment": "", "work": "", "movement": "" } };
+        this.station = { "station": { "id": 1, "name": "funky", "description": "testing a radio playlist" }, 'songlist': [], 'song': { "id": 3215, "location": "../../music/itunes/itunes media/music\\Dr. Dre\\2001\\11 The Next Episode.m4a", "album": "2001", "rating": 0, "length": "", "mood": "", "title": "The Next Episode", "artist": "Dr. Dre", "albumartist": "", "tracknumber": "", "genre": "Rap", "date": "", "originaldate": "1999", "performer": "", "comment": "", "tags": [] } };
         this.audio = new Audio();
         this.tag = { name: '' };
-        this.alltags = [];
+        this.alltags = [{ 'name': '', 'id': 1, 'songtagged': false }];
     }
     StationComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -514,11 +521,33 @@ var StationComponent = /** @class */ (function () {
                 _this.startaudio();
             });
         });
-        this.songservice.indextag().subscribe(function (data) { _this.alltags = data; });
+        this.songservice.indextag().subscribe(function (data) { _this.alltags = data; _this.checktags(); });
     };
     StationComponent.prototype.startaudio = function () {
         this.audio.src = this.song.location;
         this.audio.play();
+    };
+    StationComponent.prototype.checktags = function () {
+        var thesong = this.song;
+        for (var _i = 0, _a = this.alltags; _i < _a.length; _i++) {
+            var x = _a[_i];
+            if (thesong.tags.includes(x.id)) {
+                x.songtagged = true;
+            }
+            else {
+                x.songtagged = false;
+            }
+        }
+    };
+    StationComponent.prototype.switchtag = function (x) {
+        if (this.alltags[x].songtagged) {
+            this.alltags[x].songtagged = false;
+            this.songservice.removetag(this.song.id, this.alltags[x].id).subscribe(function (data) { });
+        }
+        else {
+            this.alltags[x].songtagged = true;
+            this.songservice.addtag(this.song.id, this.alltags[x].id).subscribe(function (data) { });
+        }
     };
     StationComponent.prototype.pauseaudio = function () {
         if (this.audio.paused) {
@@ -535,10 +564,13 @@ var StationComponent = /** @class */ (function () {
         this.songservice.dislikesong(this.station.station.id, this.song.id).subscribe(function (data) { });
         this.nexttrack();
     };
+    StationComponent.prototype.editsong = function () {
+        this.songservice.songshow(this.song.id, { rating: this.song.rating }).subscribe(function (data) { });
+    };
     StationComponent.prototype.randomtrack = function () {
         var _this = this;
         this.audio.pause();
-        this.songservice.randomsong().subscribe(function (data) { _this.song = data; _this.startaudio(); });
+        this.songservice.randomsong().subscribe(function (data) { _this.song = data; _this.startaudio(); _this.checktags(); });
     };
     StationComponent.prototype.nexttrack = function () {
         var _this = this;
@@ -547,6 +579,7 @@ var StationComponent = /** @class */ (function () {
             _this.song = data;
             _this.audio.src = _this.song.location;
             _this.audio.play();
+            _this.checktags();
         });
     };
     StationComponent.prototype.addtag = function () {

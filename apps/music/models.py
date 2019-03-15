@@ -75,22 +75,24 @@ class Song(models.Model):
             score -=1
         return score
     def songdict(self):
-        s={'location':self.location,'album':self.album,'rating':self.rating,'length':self.length,
+        s={'id':self.id,'location':self.location,'album':self.album,'rating':self.rating,'length':self.length,
         'mood':self.mood,'title':self.title,'artist':self.artist, 'albumartist':self.albumartist, 
         'tracknumber':self.tracknumber,'genre':self.genre,'date':self.date,
         'originaldate':self.originaldate,'performer':self.performer,'comment':self.comment}
-        tags=[]
-        for i in self.tags.all().values('id','name'):
-            tags.append({'id':i['id'],'name':i['name']})
-        s['tags']=tags
+        tagsarr=[]
+        for i in self.tags.all():
+            tagsarr.append(i.id)
+        s['tags']=tagsarr
         return s
 
 class Tag(models.Model):
     name=models.CharField(max_length=100)
     songs = models.ManyToManyField(Song, related_name="tags")    
     relatives= models.ManyToManyField('self', related_name="relatedtags")
+    def tagdict(self):
+        return {'name':self.name,'id':self.id}
     def __repr__(self):
-        return (f"Song #{self.id}: {self.name}")
+        return (f"Tag #{self.id}: {self.name}")
 
 class Playlist(models.Model):
     name=models.CharField(max_length=100)
@@ -101,7 +103,7 @@ class Playlist(models.Model):
         return (f"Playlist #{self.id}: {self.name}")
     
     def pldict(self):
-        pl={'name':self.name,'description':self.description}
+        pl={'id':self.id,'name':self.name,'description':self.description}
         songids={}
         songlist=[]
         relatedplaylists=[]
@@ -121,7 +123,7 @@ class Station(models.Model):
         return (f"Station #{self.id}: {self.name}")
 
     def tdict(self):
-        t={'name':self.name,'description':self.description}
+        t={'name':self.name,'description':self.description,'id':self.id}
         s=self.songs.first()        
         return {'station':t,'song':s.songdict()}
 

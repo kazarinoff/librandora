@@ -9,12 +9,12 @@ import {SongService} from '../song.service';
 })
 export class StationComponent implements OnInit {
   title = 'public';
-  song={"id": 9709, "location": "../../music/MusicBee\\Ripped Files\\De La Soul\\And the Anonymous Nobody\\02 Royalty Capes.mp3", "album": "And the Anonymous Nobody", "source": "", "bpm": "", "compilation": "", "rating": 0, "composer": "", "copyrightdate": "", "encodedby": "", "lyricist": "", "length": "", "media": "", "mood": "", "title": "Royalty Capes", "version": "", "artist": "De La Soul", "albumartist": "De La Soul", "conductor": "", "arranger": "", "discnumber": "", "tracknumber": "2/17", "author": "", "isrc": "", "discsubtitle": "", "language": "", "genre": "Hip Hop", "date": "2016", "originaldate": "", "performer": "", "organization": "", "musicbrainz_trackid": "", "website": "", "replaygain": "", "replaygainpeak": "", "musicbrainz_artistid": "", "musicbrainz_albumid": "", "musicbrainz_albumartistid": "", "musicbrainz_trmid": "", "musicip_puid": "", "musicip_fingerprint": "", "musicbrainz_albumstatus": "", "musicbrainz_albumtype": "", "releasecountry": "", "musicbrainz_discid": "", "asin": "", "barcode": "", "catalognumber": "", "musicbrainz_releasetrackid": "", "musicbrainz_releasegroupid": "", "performer2": "", "musicbrainz_workid": "", "acoustid_fingerprint": "", "acoustid_id": "", "playbackgap": "", "comment": "", "work": "", "movement": ""};
+  song={"id": 3215, "location": "../../music/itunes/itunes media/music\\Dr. Dre\\2001\\11 The Next Episode.m4a", "album": "2001", "rating": 0, "length": "", "mood": "", "title": "The Next Episode", "artist": "Dr. Dre", "albumartist": "", "tracknumber": "", "genre": "Rap", "date": "", "originaldate": "1999", "performer": "", "comment": "", "tags": []};
   songindex=0;
-  station={"station":{"id": 1, "name": "funky", "description": "testing a radio playlist", "kind": "radio"},'songlist':[],'song':{"id": 9709, "location": "../../music/MusicBee\\Ripped Files\\De La Soul\\And the Anonymous Nobody\\02 Royalty Capes.mp3", "album": "And the Anonymous Nobody", "source": "", "bpm": "", "compilation": "", "rating": 0, "composer": "", "copyrightdate": "", "encodedby": "", "lyricist": "", "length": "", "media": "", "mood": "", "title": "Royalty Capes", "version": "", "artist": "De La Soul", "albumartist": "De La Soul", "conductor": "", "arranger": "", "discnumber": "", "tracknumber": "2/17", "author": "", "isrc": "", "discsubtitle": "", "language": "", "genre": "Hip Hop", "date": "2016", "originaldate": "", "performer": "", "organization": "", "musicbrainz_trackid": "", "website": "", "replaygain": "", "replaygainpeak": "", "musicbrainz_artistid": "", "musicbrainz_albumid": "", "musicbrainz_albumartistid": "", "musicbrainz_trmid": "", "musicip_puid": "", "musicip_fingerprint": "", "musicbrainz_albumstatus": "", "musicbrainz_albumtype": "", "releasecountry": "", "musicbrainz_discid": "", "asin": "", "barcode": "", "catalognumber": "", "musicbrainz_releasetrackid": "", "musicbrainz_releasegroupid": "", "performer2": "", "musicbrainz_workid": "", "acoustid_fingerprint": "", "acoustid_id": "", "playbackgap": "", "comment": "", "work": "", "movement": ""}}
+  station={"station":{"id": 1, "name": "funky", "description": "testing a radio playlist"},'songlist':[],'song':{"id": 3215, "location": "../../music/itunes/itunes media/music\\Dr. Dre\\2001\\11 The Next Episode.m4a", "album": "2001", "rating": 0, "length": "", "mood": "", "title": "The Next Episode", "artist": "Dr. Dre", "albumartist": "", "tracknumber": "", "genre": "Rap", "date": "", "originaldate": "1999", "performer": "", "comment": "", "tags": []}}
   audio =new Audio();
   tag= {name:''}
-  alltags=[]
+  alltags=[{'name':'','id':1,'songtagged':false}]
   constructor(private songservice:SongService, private _route:ActivatedRoute, private _router:Router){}
   ngOnInit(){
     this._route.params.subscribe((params:Params)=> {
@@ -24,12 +24,29 @@ export class StationComponent implements OnInit {
         this.startaudio();
       })
     });
-    this.songservice.indextag().subscribe((data:any)=>{this.alltags=data});
+    this.songservice.indextag().subscribe((data:any)=>{this.alltags=data; this.checktags()});
   }
     startaudio(){
     this.audio.src = this.song.location;
     this.audio.play()
   }
+  checktags(){
+    var thesong=this.song;
+    for (let x of this.alltags){
+      if (thesong.tags.includes(x.id)){x.songtagged=true}
+      else {x.songtagged=false}
+    }
+  }
+  switchtag(x){
+    if (this.alltags[x].songtagged){
+      this.alltags[x].songtagged=false;
+      this.songservice.removetag(this.song.id,this.alltags[x].id).subscribe((data:any)=>{})
+    }
+    else {this.alltags[x].songtagged=true;
+      this.songservice.addtag(this.song.id,this.alltags[x].id).subscribe((data:any)=>{})
+    }
+  }
+
   pauseaudio(){
     if (this.audio.paused) { this.audio.play()}
     else {this.audio.pause()}
@@ -41,10 +58,12 @@ export class StationComponent implements OnInit {
     this.songservice.dislikesong(this.station.station.id,this.song.id).subscribe((data:any)=>{});
     this.nexttrack();
   }
-
+  editsong(){
+    this.songservice.songshow(this.song.id,{rating:this.song.rating}).subscribe((data:any) => {})
+  }
   randomtrack(){
     this.audio.pause();
-    this.songservice.randomsong().subscribe((data:any)=>{this.song=data; this.startaudio()})
+    this.songservice.randomsong().subscribe((data:any)=>{this.song=data; this.startaudio();this.checktags()})
   }
   nexttrack(){
     this.audio.pause()
@@ -52,6 +71,7 @@ export class StationComponent implements OnInit {
       this.song=data;
       this.audio.src=this.song.location
       this.audio.play();
+      this.checktags()
     })
   }
   addtag(){

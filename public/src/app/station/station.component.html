@@ -7,7 +7,7 @@
   <p id='rating'>Rating: {{song.rating}}</p>
 
   <form (ngSubmit)='editsong()'>
-    Rating:<input [(ngModel)]="song.rating" type='number' name='rating'>  
+    Rating:<input [(ngModel)]="song.rating" type='range' min='0' max='10' style='width:15%;' name='rating'>  
     <input type='submit' value='RATE'>
   </form>
 </div>
@@ -18,5 +18,8 @@
   <button (click)="likesong()" id='pause'>LIKE</button>
   <button (click)="dislikesong()" id='pause'>DISLIKE</button>
 
-  
+
+</div>
+<div>
+<button class='btn btn-outline-primary' (click)="switchtag(x)" [ngClass]="{'tagborder': i.songtagged}" *ngFor="let i of alltags;let x=index">{{i.name}}</button>
 </div>

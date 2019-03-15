@@ -37,7 +37,7 @@ export class RadioComponent implements OnInit {
     else {this.audio.pause()}
   }
   editsong(){
-    this.songservice.editsong(this.song.id,{rating:this.song.rating}).subscribe((data:any) => {})
+    this.songservice.songshow(this.song.id,{rating:this.song.rating}).subscribe((data:any) => {})
   }
 
 }
