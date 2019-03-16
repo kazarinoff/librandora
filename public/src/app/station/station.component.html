@@ -24,10 +24,12 @@
 
 </div>
 <div>
-<button style='padding:5px;' class='btn btn-outline-primary' (click)="switchtag(x)" [ngClass]="{'tagborder': i.songtagged}" *ngFor="let i of alltags;let x=index">{{i.name}}</button>
+<button style='padding:5px;' class='btn btn-outline-primary' (click)="switchtag(x)" 
+[ngClass]="{'tagborder': i.songtagged}" *ngFor="let i of alltags;let x=index">{{i.name}}</button>
 <form (ngSubmit)='createtag()'>
   <input [(ngModel)]="tag.name" type='text' name='tag'>  
   <input type='submit' value='#TAG'>
 </form>
 
 </div>
+<app-playlistcreator></app-playlistcreator>

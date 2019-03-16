@@ -152,6 +152,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _playlist_playlist_component__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./playlist/playlist.component */ "./src/app/playlist/playlist.component.ts");
 /* harmony import */ var _radio_radio_component__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./radio/radio.component */ "./src/app/radio/radio.component.ts");
 /* harmony import */ var _station_station_component__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./station/station.component */ "./src/app/station/station.component.ts");
+/* harmony import */ var _playlistcreator_playlistcreator_component__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./playlistcreator/playlistcreator.component */ "./src/app/playlistcreator/playlistcreator.component.ts");
+
 
 
 
@@ -173,6 +175,7 @@ var AppModule = /** @class */ (function () {
                 _playlist_playlist_component__WEBPACK_IMPORTED_MODULE_8__["PlaylistComponent"],
                 _radio_radio_component__WEBPACK_IMPORTED_MODULE_9__["RadioComponent"],
                 _station_station_component__WEBPACK_IMPORTED_MODULE_10__["StationComponent"],
+                _playlistcreator_playlistcreator_component__WEBPACK_IMPORTED_MODULE_11__["PlaylistcreatorComponent"],
             ],
             imports: [
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_1__["BrowserModule"],
@@ -287,6 +290,62 @@ var PlaylistComponent = /** @class */ (function () {
         tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_song_service__WEBPACK_IMPORTED_MODULE_3__["SongService"], _angular_router__WEBPACK_IMPORTED_MODULE_2__["ActivatedRoute"], _angular_router__WEBPACK_IMPORTED_MODULE_2__["Router"]])
     ], PlaylistComponent);
     return PlaylistComponent;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/playlistcreator/playlistcreator.component.css":
+/*!***************************************************************!*\
+  !*** ./src/app/playlistcreator/playlistcreator.component.css ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL3BsYXlsaXN0Y3JlYXRvci9wbGF5bGlzdGNyZWF0b3IuY29tcG9uZW50LmNzcyJ9 */"
+
+/***/ }),
+
+/***/ "./src/app/playlistcreator/playlistcreator.component.html":
+/*!****************************************************************!*\
+  !*** ./src/app/playlistcreator/playlistcreator.component.html ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<h2>New Playlist</h2>\n  <form (ngSubmit)='createplaylist()'>\n    <select  multiple [(ngModel)]=\"genre.id\" name='genre'>\n      <option>genres</option>\n      </select>\n      <select  multiple [(ngModel)]=\"tag.id\" name='tag'>\n          <option>tags</option>\n          </select>\n        <input type='submit' value='NEW Playlist'>\n  </form>"
+
+/***/ }),
+
+/***/ "./src/app/playlistcreator/playlistcreator.component.ts":
+/*!**************************************************************!*\
+  !*** ./src/app/playlistcreator/playlistcreator.component.ts ***!
+  \**************************************************************/
+/*! exports provided: PlaylistcreatorComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PlaylistcreatorComponent", function() { return PlaylistcreatorComponent; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+
+
+var PlaylistcreatorComponent = /** @class */ (function () {
+    function PlaylistcreatorComponent() {
+    }
+    PlaylistcreatorComponent.prototype.ngOnInit = function () {
+    };
+    PlaylistcreatorComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
+            selector: 'app-playlistcreator',
+            template: __webpack_require__(/*! ./playlistcreator.component.html */ "./src/app/playlistcreator/playlistcreator.component.html"),
+            styles: [__webpack_require__(/*! ./playlistcreator.component.css */ "./src/app/playlistcreator/playlistcreator.component.css")]
+        }),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [])
+    ], PlaylistcreatorComponent);
+    return PlaylistcreatorComponent;
 }());
 
 
@@ -477,7 +536,7 @@ module.exports = ".tagborder {\r\n    border: 1pt solid black;\r\n    background
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<h2>{{station.station.name}}</h2>\r\n<div>\r\n  <audio  #radioplayer [src]=\"song.location\" (ended)=\"nexttrack()\" autoplay='true' name='audioplayer'></audio>\r\n</div>\r\n<div>\r\n  <p id='title'>Track: {{song.title}}</p>\r\n  <p id='artist'>Artist: {{song.artist}}</p>\r\n  <p id='album'>Album: {{song.album}}</p>\r\n  <p id='genre'>Genre: {{song.genre}}</p>\r\n  <p id='rating'>Rating: {{song.rating}}</p>\r\n\r\n  <form (ngSubmit)='editsong()'>\r\n    Rating:<input [(ngModel)]=\"song.rating\" type='range' min='0' max='10' style='width:15%;' name='rating'>  \r\n    <input type='submit' value='RATE'>\r\n  </form>\r\n</div>\r\n<div>\r\n  <button (click)=\"nexttrack()\" id='next'>NEXT TRACK</button>  \r\n  <button (click)=\"randomtrack()\" id='next'>Random</button>  \r\n  <button (click)=\"pauseaudio()\" id='pause'>Start/Stop Music</button>\r\n  <button (click)=\"likesong()\" id='pause'>LIKE</button>\r\n  <button (click)=\"dislikesong()\" id='pause'>DISLIKE</button>\r\n\r\n\r\n</div>\r\n<div>\r\n<button style='padding:5px;' class='btn btn-outline-primary' (click)=\"switchtag(x)\" [ngClass]=\"{'tagborder': i.songtagged}\" *ngFor=\"let i of alltags;let x=index\">{{i.name}}</button>\r\n<form (ngSubmit)='createtag()'>\r\n  <input [(ngModel)]=\"tag.name\" type='text' name='tag'>  \r\n  <input type='submit' value='#TAG'>\r\n</form>\r\n\r\n</div>\r\n"
+module.exports = "<h2>{{station.station.name}}</h2>\r\n<div>\r\n  <audio  #radioplayer [src]=\"song.location\" (ended)=\"nexttrack()\" autoplay='true' name='audioplayer'></audio>\r\n</div>\r\n<div>\r\n  <p id='title'>Track: {{song.title}}</p>\r\n  <p id='artist'>Artist: {{song.artist}}</p>\r\n  <p id='album'>Album: {{song.album}}</p>\r\n  <p id='genre'>Genre: {{song.genre}}</p>\r\n  <p id='rating'>Rating: {{song.rating}}</p>\r\n\r\n  <form (ngSubmit)='editsong()'>\r\n    Rating:<input [(ngModel)]=\"song.rating\" type='range' min='0' max='10' style='width:15%;' name='rating'>  \r\n    <input type='submit' value='RATE'>\r\n  </form>\r\n</div>\r\n<div>\r\n  <button (click)=\"nexttrack()\" id='next'>NEXT TRACK</button>  \r\n  <button (click)=\"randomtrack()\" id='next'>Random</button>  \r\n  <button (click)=\"pauseaudio()\" id='pause'>Start/Stop Music</button>\r\n  <button (click)=\"likesong()\" id='pause'>LIKE</button>\r\n  <button (click)=\"dislikesong()\" id='pause'>DISLIKE</button>\r\n\r\n\r\n</div>\r\n<div>\r\n<button style='padding:5px;' class='btn btn-outline-primary' (click)=\"switchtag(x)\" \r\n[ngClass]=\"{'tagborder': i.songtagged}\" *ngFor=\"let i of alltags;let x=index\">{{i.name}}</button>\r\n<form (ngSubmit)='createtag()'>\r\n  <input [(ngModel)]=\"tag.name\" type='text' name='tag'>  \r\n  <input type='submit' value='#TAG'>\r\n</form>\r\n\r\n</div>\r\n<app-playlistcreator></app-playlistcreator>\r\n"
 
 /***/ }),
 

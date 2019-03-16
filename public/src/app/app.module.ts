@@ -8,6 +8,7 @@ import { SongService } from './song.service';
 import { PlaylistComponent } from './playlist/playlist.component';
 import { RadioComponent } from './radio/radio.component';
 import { StationComponent } from './station/station.component';
+import { PlaylistcreatorComponent } from './playlistcreator/playlistcreator.component';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { StationComponent } from './station/station.component';
     PlaylistComponent,
     RadioComponent,
     StationComponent,
+    PlaylistcreatorComponent,
   ],
   imports: [
     BrowserModule,
