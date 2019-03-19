@@ -44,5 +44,7 @@ export class SongService {
   removetag(sid,tgid){
     return this._http.get('/api/song/'+sid+'/remove/'+tgid);
   }
-
+  indexgenre(){
+    return this._http.get('/api/genre/all')
+  }
 }

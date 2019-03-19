@@ -125,7 +125,10 @@ def tagindex(request):
     return JsonResponse(ts, safe=False)
 
 def playlistcreate(request):
-    pass
+    edits=json.loads(request.body)
+    pl=Playlist.objects.create(name=edits['name'],description=edits['description'])
+    s=Song.objects.filter(genre=edits['genre'][0])
+    tags=Tag.objects.filter(id=edits[''])
 
 def stationcreate(request):
     pass

@@ -314,7 +314,7 @@ module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<h2>New Playlist</h2>\n  <form (ngSubmit)='createplaylist()'>\n    <select  multiple [(ngModel)]=\"genre.id\" name='genre'>\n      <option>genres</option>\n      </select>\n      <select  multiple [(ngModel)]=\"tag.id\" name='tag'>\n          <option>tags</option>\n          </select>\n        <input type='submit' value='NEW Playlist'>\n  </form>"
+module.exports = "<h2>New Playlist</h2>\n  <form (ngSubmit)='createplaylist()'>\n    <input [(ngModel)]=\"creation.name\" name='name'>\n    <select  multiple name='genre'>\n      <option *ngFor=\"let g in genres\">{{g}}</option>\n      </select>\n      <select  multiple name='tag'>\n          <option>tags</option>\n          </select>\n    <textarea [(ngModel)]=\"creation.description\" name='description'>\n\n        <input type='submit' value='NEW Playlist' name='submit'>\n  </form>"
 
 /***/ }),
 
@@ -330,12 +330,35 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PlaylistcreatorComponent", function() { return PlaylistcreatorComponent; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _song_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../song.service */ "./src/app/song.service.ts");
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
+
+
 
 
 var PlaylistcreatorComponent = /** @class */ (function () {
-    function PlaylistcreatorComponent() {
+    function PlaylistcreatorComponent(songservice, _route, _router) {
+        this.songservice = songservice;
+        this._route = _route;
+        this._router = _router;
+        this.genres = [];
+        this.tags = [];
+        this.creation = { "genres": [], "tags": [], 'name': '', 'description': '' };
     }
     PlaylistcreatorComponent.prototype.ngOnInit = function () {
+        this.genresindex();
+        this.tagsindex();
+    };
+    PlaylistcreatorComponent.prototype.genresindex = function () {
+        var _this = this;
+        this.songservice.indexgenre().subscribe(function (data) { _this.genres = data; });
+    };
+    PlaylistcreatorComponent.prototype.tagsindex = function () {
+        var _this = this;
+        this.songservice.indextag().subscribe(function (data) { _this.tags = data; });
+    };
+    PlaylistcreatorComponent.prototype.createplaylist = function () {
+        this.songservice;
     };
     PlaylistcreatorComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
@@ -343,7 +366,7 @@ var PlaylistcreatorComponent = /** @class */ (function () {
             template: __webpack_require__(/*! ./playlistcreator.component.html */ "./src/app/playlistcreator/playlistcreator.component.html"),
             styles: [__webpack_require__(/*! ./playlistcreator.component.css */ "./src/app/playlistcreator/playlistcreator.component.css")]
         }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [])
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_song_service__WEBPACK_IMPORTED_MODULE_2__["SongService"], _angular_router__WEBPACK_IMPORTED_MODULE_3__["ActivatedRoute"], _angular_router__WEBPACK_IMPORTED_MODULE_3__["Router"]])
     ], PlaylistcreatorComponent);
     return PlaylistcreatorComponent;
 }());
@@ -504,6 +527,9 @@ var SongService = /** @class */ (function () {
     };
     SongService.prototype.removetag = function (sid, tgid) {
         return this._http.get('/api/song/' + sid + '/remove/' + tgid);
+    };
+    SongService.prototype.indexgenre = function () {
+        return this._http.get('/api/genre/all');
     };
     SongService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
