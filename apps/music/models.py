@@ -96,7 +96,7 @@ class Station(models.Model):
         return {'station':t,'song':s.songdict()}
 
     def tscore(self):
-        scoredict={'points':{'genres':{},'albums':{},'artist':{},'tags':[],'minuses':{'genres':{},'albums':{},'artist':{}},'range':{'max':3,'min':-3}}
+        scoredict={'points':{'genres':{},'albums':{},'artist':{},'tags':''},'minuses':{'genres':{},'albums':{},'artist':{}},'range':{'max':3,'min':-3}}
         # tags=Tag.objects.filter(songs__stations__id=self.id)
         songs=self.songs.all()
         dislikedsongs=self.dislikedsongs.all()
@@ -110,8 +110,6 @@ class Station(models.Model):
         for i in albums:
             scoredict['points']['albums'][i['album']]=i['album__count']
         songtags=Tag.objects.filter(songs__stations__id=self.id).values('name','id')
-        fort t in songtags:
-            songdict['points']['tags'].append(t)
         dalbums=self.dislikedsongs.all().values('genre').annotate(models.Count('album'))
         for h in dalbums:
             scoredict['minuses']['albums'][i['album']]=i['album__count']
@@ -125,6 +123,12 @@ class Station(models.Model):
         # scoredict['range']['min']=-1*(max(scoredict['minuses']['genres'].values()) + max(scoredict['minuses']['albums'].values()))
         return scoredict
 
+    def tscore2(self):
+        tagsfor=Tag.objects.filter(songs__stations__id=self.id)
+        scoredict={'points':[],'minuses':""}
+        for tag in tagsfor:
+            scoredict['points'].append("a")
+        return 0
 class Listing(models.Model):
     song=models.ForeignKey(Song, on_delete=models.CASCADE)
     playlist=models.ForeignKey(Playlist, on_delete=models.CASCADE)
