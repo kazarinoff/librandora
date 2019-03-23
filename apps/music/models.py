@@ -8,7 +8,6 @@ class Song(models.Model):
     compilation=models.CharField(max_length=100)
     rating=models.IntegerField(default=0)
     composer=models.CharField(max_length=100)
-    copyrightdate=models.CharField(max_length=100)
     encodedby=models.CharField(max_length=100)
     length=models.CharField(max_length=100)
     title=models.CharField(max_length=100)
@@ -55,8 +54,22 @@ class Song(models.Model):
 
 class Tag(models.Model):
     name=models.CharField(max_length=100)
-    songs = models.ManyToManyField(Song, related_name="tags")    
+    songs = models.ManyToManyField(Song, related_name="tags")
+    decade= 'decade'
+    genre='genre'
+    mood='mood'
+    misc='misc'
+    style='style'
+    kind_choices= (
+        (decade,'decade'),
+        (genre,'genre'),
+        (mood,'mood'),
+        (style,'style'),
+        (misc,'miscellaneous'),
+    )
+    kind = models.CharField(max_length=50,choices=kind_choices)
     relatives= models.ManyToManyField('self', related_name="relatedtags")
+
     def tagdict(self):
         return {'name':self.name,'id':self.id}
     def __repr__(self):
@@ -127,7 +140,7 @@ class Station(models.Model):
         tagsfor=Tag.objects.filter(songs__stations__id=self.id)
         scoredict={'points':[],'minuses':""}
         for tag in tagsfor:
-            scoredict['points'].append("a")
+            scoredict['points'].append(tag)
         return 0
 class Listing(models.Model):
     song=models.ForeignKey(Song, on_delete=models.CASCADE)
