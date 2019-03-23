@@ -11,7 +11,7 @@ def createtag(request,sid):
             tag=Tag.objects.create(name=taginfo['name'])
             s.tags.add(tag)
         except:
-            s=Song.objects.first()
+            return JsonResponse({}, safe=False)
     return JsonResponse(s.songdict(), safe=False)
 
 def addtag(request,sid,tgid):
@@ -20,7 +20,7 @@ def addtag(request,sid,tgid):
         s=Song.objects.get(id=sid)
         tag.songs.add(s)
     except:
-        s=Song.objects.first()
+        return JsonResponse({}, safe=False)
     return JsonResponse(s.songdict(), safe=False)
 
 
@@ -30,20 +30,23 @@ def removetag(request,sid,tgid):
         s=Song.objects.get(id=sid)
         tag.songs.remove(s)
     except:
-        s=Song.objects.first()
+        return JsonResponse({}, safe=False)
     return JsonResponse(s.songdict(), safe=False)
 
 def randomsong(request):
-    rn=Song.objects.last().id
-    foundsong=False
-    while foundsong:
-        sid=random.randint(1,rn)
-        try:
-            song=Song.objects.get(id=sid)
-            foundsong=True
-        except:
-            pass
-    return JsonResponse(song.songdict(), safe=False)
+    try:
+        rn=Song.objects.last().id
+        foundsong=False
+        while foundsong:
+            sid=random.randint(1,rn)
+            try:
+                song=Song.objects.get(id=sid)
+                foundsong=True
+            except:
+                pass
+        return JsonResponse(song.songdict(), safe=False)
+    except:
+        return JsonResponse({}, safe=False)
 
 def showsong(request,sid):
     if request.method=='POST':
@@ -51,7 +54,7 @@ def showsong(request,sid):
     try:
         song=Song.objects.get(id=sid)
     except:
-        song=Song.objects.first()
+        return JsonResponse({}, safe=False)
     return JsonResponse(song.songdict(), safe=False)
 
 def editsong(request,sid):
@@ -61,7 +64,7 @@ def editsong(request,sid):
         s.rating=edits['rating']
         s.save()
     except:
-        s=Song.objects.first()
+        return JsonResponse({}, safe=False)
     return JsonResponse(s.songdict(), safe=False)
 
 def genreindex(request):
@@ -75,14 +78,14 @@ def playlistshow(request,pid):
     try:
         pl=Playlist.objects.get(id=pid)
     except:
-        pl=Playlist.objects.first()
+        return JsonResponse({}, safe=False)
     return JsonResponse(pl.pldict(), safe=False)
 
 def stationshow(request,tid):
     try:
         t=Station.objects.get(id=tid)
     except:
-        t=Station.objects.first()
+        return JsonResponse({}, safe=False)
     return JsonResponse(t.tdict(), safe=False)
 
 def likesong(request,sid,tid):
@@ -97,15 +100,18 @@ def likesong(request,sid,tid):
     return JsonResponse(sd, safe=False)
 
 def dislikesong(request,sid,tid):
-    s=Song.objects.get(id=sid)
-    t=Station.objects.get(id=tid)
     try:
-        tl=Stationlisting.objects.get(song=sid,station=tid)
-        tl.delete()
-    except:
-        pass
-    try:
-        Station.objects.get(id=tid).dislikedsongs.add(Song.objects.get(id=sid))
+        s=Song.objects.get(id=sid)
+        t=Station.objects.get(id=tid)
+        try:
+            tl=Stationlisting.objects.get(song=sid,station=tid)
+            tl.delete()
+        except:
+            pass
+        try:
+            Station.objects.get(id=tid).dislikedsongs.add(Song.objects.get(id=sid))
+        except:
+            return JsonResponse({}, safe=False)
     except:
         return JsonResponse({}, safe=False)
     return JsonResponse(s.songdict(), safe=False)
@@ -126,27 +132,34 @@ def tagindex(request):
 
 def playlistcreate(request):
     edits=json.loads(request.body)
-    pl=Playlist.objects.create(name=edits['name'],description=edits['description'])
-    s=Song.objects.filter(genre=edits['genre'][0])
-    tags=Tag.objects.filter(id=edits[''])
+    try:
+        pl=Playlist.objects.create(name=edits['name'],description=edits['description'])
+        s=Song.objects.filter(genre=edits['genre'][0])
+        tags=Tag.objects.filter(id=edits[''])
+    except:
+        pass
+    return True
 
 def stationcreate(request):
     pass
 
 def stationnextsong(request, tid):
-    rn=Song.objects.last().id
-    stationscore=Station.objects.get(id=tid).tscore()
-    matcharray= [0,0,0,1,1,1,1,1,1,2]
-    matchvalue=matcharray[random.randint(0,9)]
-    songscore=-999
-    tries=0
-    while (songscore < matchvalue) and (tries<100):
-        sn=random.randint(1,rn)
-        try:
-            song=Song.objects.get(id=sn)
-            songscore=song.sscore(stationscore)
-            print (f"Mathing value:{matchvalue}  tries:{tries}  songscore:{songscore}")
-            tries +=1
-        except:
-            tries +=1
-    return JsonResponse(song.songdict(), safe=False)
+    try:
+        rn=Song.objects.last().id
+        stationscore=Station.objects.get(id=tid).tscore()
+        matcharray= [0,0,0,1,1,1,1,1,1,2]
+        matchvalue=matcharray[random.randint(0,9)]
+        songscore=-999
+        tries=0
+        while (songscore < matchvalue) and (tries<100):
+            sn=random.randint(1,rn)
+            try:
+                song=Song.objects.get(id=sn)
+                songscore=song.sscore(stationscore)
+                print (f"Mathing value:{matchvalue}  tries:{tries}  songscore:{songscore}")
+                tries +=1
+            except:
+                tries +=1
+        return JsonResponse(song.songdict(), safe=False)
+    except:
+        return JsonResponse({}, safe=False)
