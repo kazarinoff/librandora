@@ -5,7 +5,7 @@ from django.db.models import Count
 
 def tagindex(request):
     t=Tag.objects.all().values('name','id','kind').order_by('kind','name')
-    ts={'genre':[],'decade':[],'mood':[],'style':[],'misc':[]}
+    ts={'genre':[],'mood':[],'style':[],'decade':[],'misc':[]}
     for i in t:
         if i['kind']=='genre':
             ts['genre'].append(i)

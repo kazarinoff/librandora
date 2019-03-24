@@ -1,38 +1,40 @@
-<h2>Station: {{station.station.name}}</h2>
-<div>
-  <audio  #radioplayer [src]="song.location" (ended)="nexttrack()" autoplay='true' name='audioplayer'></audio>
-</div>
-<div>
-  <p id='title'>Track: {{song.title}}</p>
-  <p id='artist'>Artist: {{song.artist}}</p>
-  <p id='album'>Album: {{song.album}}</p>
-  <p id='genre'>Genre: {{song.genre}}</p>
-  <p id='rating'>Rating: {{song.rating}}</p>
+<div class='row'>
+<div class='col-6'>
+  <h2>Station: {{station.station.name}}</h2>
 
-  <form (ngSubmit)='editsong()'>
-    Rating:<input [(ngModel)]="song.rating" type='range' min='0' max='10' style='width:15%;' name='rating'>  
-    <input type='submit' value='RATE'>
-  </form>
+  <div>
+    <audio  controls #radioplayer [src]="song.location" (ended)="nexttrack()" autoplay='true' name='audioplayer'></audio>
+  </div>
+  <button style='margin:5px;' class='btn-secondary' (click)="nexttrack()" id='next'>NEXT TRACK</button>  
+  <button style='margin:5px;' class='btn-secondary' (click)="randomtrack()" id='next'>Random</button> 
+  <!-- <button class='btn-secondary' (click)="pauseaudio()" id='pause'>Start/Stop Music</button> -->
+  <button style='margin:5px;' class='btn-info' (click)="likesong()" id='pause'>LIKE</button>
+  <button style='margin:5px;' class='btn-danger' (click)="dislikesong()" id='pause'>DISLIKE</button>
+   
+  <div>
+    <p id='title'>Title: {{song.title}}</p>
+    <p id='artist'>Artist: {{song.artist}}</p>
+    <p id='album'>Album: {{song.album}}</p>
+    <p id='rating'>Rating: <span *ngIf="!song.rating">Not yet rated</span>{{song.rating}}</p>
+    <form (ngSubmit)='editsong()'>
+      Rating:<input [(ngModel)]="song.rating" type='range' min='0' max='10' style='width:30%;' name='rating'>  
+      <input class='btn-secondary' type='submit' value='RATE'>
+    </form>
+  </div>
 </div>
-<div>
-  <button class='btn-primary' (click)="nexttrack()" id='next'>NEXT TRACK</button>  
-  <button (click)="randomtrack()" id='next'>Random</button>  
-  <button (click)="pauseaudio()" id='pause'>Start/Stop Music</button>
-  <button (click)="likesong()" id='pause'>LIKE</button>
-  <button (click)="dislikesong()" id='pause'>DISLIKE</button>
-
-
-</div>
-<div *ngFor="let i of object.keys(alltags)">
-  <h3>{{i}}</h3>
-<button *ngFor="let h of alltags[i]; let x=index" style='margin:5px;' (click)="switchtag(i,x)" class='btn btn-secondary' [class.btn-warning]="h.songtagged" >{{h.name}}</button>
- </div>
-<form (ngSubmit)='createtag()'>
+<div class='col-6'>
+  <h3>#TAGS</h3>
+  <div style='text-align:center;' *ngFor="let i of object.keys(alltags); let y=index">
+    <h5>{{i}}</h5>
+    <button *ngFor="let h of alltags[i]; let x=index" style='margin:5px;' (click)="switchtag(i,x)" class='btn btn-outline-secondary btn-small' [class.btn-outline-info]="(y%2==0)" [class.btn-warning]="h.songtagged" >{{h.name}}</button>
+  </div>
+  <form (ngSubmit)='createtag()'>
     <input [(ngModel)]="tag.name" type='text' name='tagname'>  
     <select [(ngModel)]="tag.kind" name='tagkind'>
       <option *ngFor="let i of object.keys(alltags)" value='{{i}}'>{{i}}</option>
     </select>
-    <input type='submit' value='ADD {{i}} #TAG'>
+    <input type='submit' value='#TAG'>
   </form>
-
+</div>
+</div>
 <app-playlistcreator></app-playlistcreator>

@@ -95,7 +95,6 @@ class Station(models.Model):
         s=random.choice(self.songs.all())
         return {'station':t,'song':s.songdict()}
 
-
 class Listing(models.Model):
     song=models.ForeignKey(Song, on_delete=models.CASCADE)
     playlist=models.ForeignKey(Playlist, on_delete=models.CASCADE)
