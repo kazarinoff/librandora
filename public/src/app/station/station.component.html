@@ -1,4 +1,4 @@
-<h2>{{station.station.name}}</h2>
+<h2>Station: {{station.station.name}}</h2>
 <div>
   <audio  #radioplayer [src]="song.location" (ended)="nexttrack()" autoplay='true' name='audioplayer'></audio>
 </div>
@@ -15,7 +15,7 @@
   </form>
 </div>
 <div>
-  <button (click)="nexttrack()" id='next'>NEXT TRACK</button>  
+  <button class='btn-primary' (click)="nexttrack()" id='next'>NEXT TRACK</button>  
   <button (click)="randomtrack()" id='next'>Random</button>  
   <button (click)="pauseaudio()" id='pause'>Start/Stop Music</button>
   <button (click)="likesong()" id='pause'>LIKE</button>
@@ -25,7 +25,7 @@
 </div>
 <div *ngFor="let i of object.keys(alltags)">
   <h3>{{i}}</h3>
-<button *ngFor="let h of alltags[i]; let x=index" style='padding:5px;' (click)="switchtag(i,x)" class='btn btn-outline-primary' [ngClass]="{'tagborder': h.songtagged}" >{{h.name}}</button>
+<button *ngFor="let h of alltags[i]; let x=index" style='margin:5px;' (click)="switchtag(i,x)" class='btn btn-secondary' [class.btn-warning]="h.songtagged" >{{h.name}}</button>
  </div>
 <form (ngSubmit)='createtag()'>
     <input [(ngModel)]="tag.name" type='text' name='tagname'>  

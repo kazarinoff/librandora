@@ -23,7 +23,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css","src/styles/mystyles.css","src/styles/sketchybootswatch.css"
             ],
             "scripts": []
           },
