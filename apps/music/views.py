@@ -152,6 +152,7 @@ def stationnextsong(request, tid):
         basesongs=Song.objects.exclude(rating__lte=2).exclude(forbiddenstations=tid)
         for tagnum in range(0,closevalue):
             basesongs=basesongs.filter(tags=(random.choice(Tag.objects.filter(songs__stations__id=tid))))
+            basesongs=basesongs.exclude(tags=(random.choice(Tag.objects.filter(songs__forbiddenstations__id=tid))))
         if (basesongs.count() == 0):
             song=random.choice(Song.objects.exclude(rating__lte=2).exclude(forbiddenstations=tid))
         else:
