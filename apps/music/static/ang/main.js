@@ -676,6 +676,7 @@ var StationComponent = /** @class */ (function () {
         this.songservice.createtag(this.song.id, this.tag).subscribe(function (data) {
             _this.song = data;
             _this.songservice.indextag().subscribe(function (data) { _this.alltags = data; _this.checktags(); });
+            _this.tag = { name: '', kind: '' };
         });
     };
     tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([

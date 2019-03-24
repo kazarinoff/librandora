@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models.fields.related import ManyToManyField
+import random
 
 class Song(models.Model):
     filetype=models.CharField(max_length=20)
@@ -91,7 +92,7 @@ class Station(models.Model):
 
     def tdict(self):
         t={'name':self.name,'description':self.description,'id':self.id}
-        s=self.songs.first()        
+        s=random.choice(self.songs.all())
         return {'station':t,'song':s.songdict()}
 
 
