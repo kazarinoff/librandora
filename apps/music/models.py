@@ -6,7 +6,7 @@ class Song(models.Model):
     location=models.CharField(max_length=255)
     album=models.CharField(max_length=100)
     compilation=models.CharField(max_length=100)
-    rating=models.IntegerField(default=0)
+    rating=models.IntegerField(null=True)
     composer=models.CharField(max_length=100)
     encodedby=models.CharField(max_length=100)
     length=models.CharField(max_length=100)
@@ -139,12 +139,11 @@ class Station(models.Model):
     def tscore(self):
         tagsfor=Tag.objects.filter(songs__stations__id=self.id).values('id')
         tagsagainst=Tag.objects.filter(songs__forbiddenstations__id=self.id).values('id')
-        scoredict={'points':[],'minuses':[],'range':{'tagnumber':0}}
+        scoredict={'points':[],'minuses':[]}
         for tag in tagsfor:
             scoredict['points'].append(tag['id'])
         for tag in tagsagainst:
             scoredict['minuses'].append(tag['id'])
-        scoredict['range']['tagnumber']=len(scoredict['points'])
         return scoredict
 class Listing(models.Model):
     song=models.ForeignKey(Song, on_delete=models.CASCADE)

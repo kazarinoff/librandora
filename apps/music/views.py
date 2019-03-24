@@ -1,7 +1,23 @@
 from django.http import JsonResponse
 from apps.music.models import *
 import random, json, os
-from django.db import models
+from django.db.models import Count
+
+def tagindex(request):
+    t=Tag.objects.all().values('name','id','kind').order_by('kind','name')
+    ts={'genre':[],'decade':[],'mood':[],'style':[],'misc':[]}
+    for i in t:
+        if i['kind']=='genre':
+            ts['genre'].append(i)
+        if i['kind']=='decade':
+            ts['decade'].append(i)
+        if i['kind']=='mood':
+            ts['mood'].append(i)
+        if i['kind']=='style':
+            ts['style'].append(i)
+        if i['kind']=='misc':
+            ts['misc'].append(i)
+    return JsonResponse(ts, safe=False)
 
 def createtag(request,sid):
     if request.method=='POST':
@@ -34,15 +50,7 @@ def removetag(request,sid,tgid):
 
 def randomsong(request):
     try:
-        rn=Song.objects.last().id
-        foundsong=False
-        while not foundsong:
-            sid=random.randint(1,rn)
-            try:
-                song=Song.objects.get(id=sid)
-                foundsong=True
-            except:
-                pass
+        song=random.choice(Song.objects.all())
         return JsonResponse(song.songdict(), safe=False)
     except:
         return JsonResponse({}, safe=False)
@@ -67,7 +75,7 @@ def editsong(request,sid):
     return JsonResponse(s.songdict(), safe=False)
 
 def genreindex(request):
-    g=Song.objects.values('genre').annotate(models.Count('genre'))
+    g=Song.objects.values('genre').annotate(Count('genre'))
     gi=[]
     for genre in g:
         gi.append(genre)
@@ -125,22 +133,6 @@ def playlistindex(request):
         pls.append(playlist)
     return JsonResponse(pls, safe=False)
 
-def tagindex(request):
-    t=Tag.objects.all().values('name','id','kind').order_by('kind','name')
-    ts={'genre':[],'decade':[],'mood':[],'style':[],'misc':[]}
-    for i in t:
-        if i['kind']=='genre':
-            ts['genre'].append(i)
-        if i['kind']=='decade':
-            ts['decade'].append(i)
-        if i['kind']=='mood':
-            ts['mood'].append(i)
-        if i['kind']=='style':
-            ts['style'].append(i)
-        if i['kind']=='misc':
-            ts['misc'].append(i)
-    return JsonResponse(ts, safe=False)
-
 def playlistcreate(request):
     edits=json.loads(request.body)
     try:
@@ -177,17 +169,16 @@ def stationcreate(request):
 
 def stationnextsong(request, tid):
     try:
-        matcharray= [0,0,0,1,1,1,1,1,1,2]
-        matchvalue=matcharray[random.randint(0,9)]
-        if matchvalue==0:
-            return randomsong(request)
+        closevalue= random.choice([0,0,0,1,1,1,1,1,1,2])
         stationscore=Station.objects.get(id=tid).tscore()
-        tagmatch=random.randint(0,stationscore['range']['tagnumber'])
-        tag=Tag.objects.get(id=tagmatch).songs.exclude(rating__lte=2)
-        if tag.count()==1:
-            song=tag[0]
+        basesongs=Song.objects.exclude(rating__lte=2).exclude(forbiddenstations=tid)
+        for tagnum in range(0,closevalue):
+            basesongs=basesongs.filter(tags=(random.choice(Tag.objects.filter(songs__stations__id=tid))))
+        if (basesongs.count() == 0):
+            song=random.choice(Song.objects.exclude(rating__lte=2).exclude(forbiddenstations=tid))
         else:
-            song=tag[random.randint(0,tag.count()-1)]
+            song=random.choice(basesongs)
         return JsonResponse(song.songdict(), safe=False)
     except:
+        print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
         return randomsong(request)
