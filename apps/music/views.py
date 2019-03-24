@@ -146,31 +146,9 @@ def playlistcreate(request):
 def stationcreate(request):
     pass
 
-# def stationnextsong(request, tid):
-#     try:
-#         rn=Song.objects.last().id
-#         stationscore=Station.objects.get(id=tid).tscore()
-#         matcharray= [0,0,0,1,1,1,1,1,1,2]
-#         matchvalue=matcharray[random.randint(0,9)]
-#         songscore=-999
-#         tries=0
-#         while (songscore < matchvalue) and (tries<100):
-#             sn=random.randint(1,rn)
-#             try:
-#                 song=Song.objects.get(id=sn)
-#                 songscore=song.sscore(stationscore)
-#                 print (f"Mathing value:{matchvalue}  tries:{tries}  songscore:{songscore}")
-#                 tries +=1
-#             except:
-#                 tries +=1
-#         return JsonResponse(song.songdict(), safe=False)
-#     except:
-#         return JsonResponse({}, safe=False)
-
 def stationnextsong(request, tid):
     try:
         closevalue= random.choice([0,0,0,1,1,1,1,1,1,2])
-        stationscore=Station.objects.get(id=tid).tscore()
         basesongs=Song.objects.exclude(rating__lte=2).exclude(forbiddenstations=tid)
         for tagnum in range(0,closevalue):
             basesongs=basesongs.filter(tags=(random.choice(Tag.objects.filter(songs__stations__id=tid))))
@@ -180,5 +158,4 @@ def stationnextsong(request, tid):
             song=random.choice(basesongs)
         return JsonResponse(song.songdict(), safe=False)
     except:
-        print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
         return randomsong(request)
