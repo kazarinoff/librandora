@@ -8,7 +8,7 @@ def createtag(request,sid):
         try:
             s=Song.objects.get(id=sid)
             taginfo=json.loads(request.body)
-            tag=Tag.objects.create(name=taginfo['name'])
+            tag=Tag.objects.create(name=taginfo['name'],kind=taginfo['kind'])
             s.tags.add(tag)
         except:
             return JsonResponse({}, safe=False)
@@ -23,7 +23,6 @@ def addtag(request,sid,tgid):
         return JsonResponse({}, safe=False)
     return JsonResponse(s.songdict(), safe=False)
 
-
 def removetag(request,sid,tgid):
     try:
         tag=Tag.objects.get(id=tgid)
@@ -37,7 +36,7 @@ def randomsong(request):
     try:
         rn=Song.objects.last().id
         foundsong=False
-        while foundsong:
+        while not foundsong:
             sid=random.randint(1,rn)
             try:
                 song=Song.objects.get(id=sid)
@@ -110,6 +109,9 @@ def dislikesong(request,sid,tid):
             pass
         try:
             Station.objects.get(id=tid).dislikedsongs.add(Song.objects.get(id=sid))
+            if not s.rating:
+                s.rating=2
+                s.save()
         except:
             return JsonResponse({}, safe=False)
     except:
@@ -124,10 +126,19 @@ def playlistindex(request):
     return JsonResponse(pls, safe=False)
 
 def tagindex(request):
-    t=Tag.objects.all().order_by('name')
-    ts=[]
+    t=Tag.objects.all().values('name','id','kind').order_by('kind','name')
+    ts={'genre':[],'decade':[],'mood':[],'style':[],'misc':[]}
     for i in t:
-        ts.append(i.tagdict())
+        if i['kind']=='genre':
+            ts['genre'].append(i)
+        if i['kind']=='decade':
+            ts['decade'].append(i)
+        if i['kind']=='mood':
+            ts['mood'].append(i)
+        if i['kind']=='style':
+            ts['style'].append(i)
+        if i['kind']=='misc':
+            ts['misc'].append(i)
     return JsonResponse(ts, safe=False)
 
 def playlistcreate(request):
@@ -143,23 +154,40 @@ def playlistcreate(request):
 def stationcreate(request):
     pass
 
+# def stationnextsong(request, tid):
+#     try:
+#         rn=Song.objects.last().id
+#         stationscore=Station.objects.get(id=tid).tscore()
+#         matcharray= [0,0,0,1,1,1,1,1,1,2]
+#         matchvalue=matcharray[random.randint(0,9)]
+#         songscore=-999
+#         tries=0
+#         while (songscore < matchvalue) and (tries<100):
+#             sn=random.randint(1,rn)
+#             try:
+#                 song=Song.objects.get(id=sn)
+#                 songscore=song.sscore(stationscore)
+#                 print (f"Mathing value:{matchvalue}  tries:{tries}  songscore:{songscore}")
+#                 tries +=1
+#             except:
+#                 tries +=1
+#         return JsonResponse(song.songdict(), safe=False)
+#     except:
+#         return JsonResponse({}, safe=False)
+
 def stationnextsong(request, tid):
     try:
-        rn=Song.objects.last().id
-        stationscore=Station.objects.get(id=tid).tscore()
         matcharray= [0,0,0,1,1,1,1,1,1,2]
         matchvalue=matcharray[random.randint(0,9)]
-        songscore=-999
-        tries=0
-        while (songscore < matchvalue) and (tries<100):
-            sn=random.randint(1,rn)
-            try:
-                song=Song.objects.get(id=sn)
-                songscore=song.sscore(stationscore)
-                print (f"Mathing value:{matchvalue}  tries:{tries}  songscore:{songscore}")
-                tries +=1
-            except:
-                tries +=1
+        if matchvalue==0:
+            return randomsong(request)
+        stationscore=Station.objects.get(id=tid).tscore()
+        tagmatch=random.randint(0,stationscore['range']['tagnumber'])
+        tag=Tag.objects.get(id=tagmatch).songs.exclude(rating__lte=2)
+        if tag.count()==1:
+            song=tag[0]
+        else:
+            song=tag[random.randint(0,tag.count()-1)]
         return JsonResponse(song.songdict(), safe=False)
     except:
-        return JsonResponse({}, safe=False)
+        return randomsong(request)

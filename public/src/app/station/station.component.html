@@ -23,13 +23,16 @@
 
 
 </div>
-<div>
-<button style='padding:5px;' class='btn btn-outline-primary' (click)="switchtag(x)" 
-[ngClass]="{'tagborder': i.songtagged}" *ngFor="let i of alltags;let x=index">{{i.name}}</button>
+<div *ngFor="let i of object.keys(alltags)">
+  <h3>{{i}}</h3>
+<button *ngFor="let h of alltags[i]; let x=index" style='padding:5px;' (click)="switchtag(i,x)" class='btn btn-outline-primary' [ngClass]="{'tagborder': h.songtagged}" >{{h.name}}</button>
+ </div>
 <form (ngSubmit)='createtag()'>
-  <input [(ngModel)]="tag.name" type='text' name='tag'>  
-  <input type='submit' value='#TAG'>
-</form>
+    <input [(ngModel)]="tag.name" type='text' name='tagname'>  
+    <select [(ngModel)]="tag.kind" name='tagkind'>
+      <option *ngFor="let i of object.keys(alltags)" value='{{i}}'>{{i}}</option>
+    </select>
+    <input type='submit' value='ADD {{i}} #TAG'>
+  </form>
 
-</div>
 <app-playlistcreator></app-playlistcreator>

@@ -314,7 +314,7 @@ module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<h2>New Playlist</h2>\n  <form (ngSubmit)='createplaylist()'>\n    <input [(ngModel)]=\"creation.name\" name='name'>\n    <select  multiple name='genre'>\n      <option *ngFor=\"let g in genres\">{{g}}</option>\n      </select>\n      <select  multiple name='tag'>\n          <option>tags</option>\n          </select>\n    <textarea [(ngModel)]=\"creation.description\" name='description'>\n\n        <input type='submit' value='NEW Playlist' name='submit'>\n  </form>"
+module.exports = "<h2>New Playlist</h2>\n  <!-- <form (ngSubmit)='createplaylist()'>\n    <input [(ngModel)]=\"creation.name\" name='name'>\n    <select  multiple name='genre'>\n      <option *ngFor=\"let g in genres\">{{g}}</option>\n      </select>\n      <select  multiple name='tag'>\n          <option>tags</option>\n          </select>\n    <textarea [(ngModel)]=\"creation.description\" name='description'>\n\n        <input type='submit' value='NEW Playlist' name='submit'>\n  </form> -->"
 
 /***/ }),
 
@@ -562,7 +562,7 @@ module.exports = ".tagborder {\r\n    border: 1pt solid black;\r\n    background
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<h2>{{station.station.name}}</h2>\r\n<div>\r\n  <audio  #radioplayer [src]=\"song.location\" (ended)=\"nexttrack()\" autoplay='true' name='audioplayer'></audio>\r\n</div>\r\n<div>\r\n  <p id='title'>Track: {{song.title}}</p>\r\n  <p id='artist'>Artist: {{song.artist}}</p>\r\n  <p id='album'>Album: {{song.album}}</p>\r\n  <p id='genre'>Genre: {{song.genre}}</p>\r\n  <p id='rating'>Rating: {{song.rating}}</p>\r\n\r\n  <form (ngSubmit)='editsong()'>\r\n    Rating:<input [(ngModel)]=\"song.rating\" type='range' min='0' max='10' style='width:15%;' name='rating'>  \r\n    <input type='submit' value='RATE'>\r\n  </form>\r\n</div>\r\n<div>\r\n  <button (click)=\"nexttrack()\" id='next'>NEXT TRACK</button>  \r\n  <button (click)=\"randomtrack()\" id='next'>Random</button>  \r\n  <button (click)=\"pauseaudio()\" id='pause'>Start/Stop Music</button>\r\n  <button (click)=\"likesong()\" id='pause'>LIKE</button>\r\n  <button (click)=\"dislikesong()\" id='pause'>DISLIKE</button>\r\n\r\n\r\n</div>\r\n<div>\r\n<button style='padding:5px;' class='btn btn-outline-primary' (click)=\"switchtag(x)\" \r\n[ngClass]=\"{'tagborder': i.songtagged}\" *ngFor=\"let i of alltags;let x=index\">{{i.name}}</button>\r\n<form (ngSubmit)='createtag()'>\r\n  <input [(ngModel)]=\"tag.name\" type='text' name='tag'>  \r\n  <input type='submit' value='#TAG'>\r\n</form>\r\n\r\n</div>\r\n<app-playlistcreator></app-playlistcreator>\r\n"
+module.exports = "<h2>{{station.station.name}}</h2>\r\n<div>\r\n  <audio  #radioplayer [src]=\"song.location\" (ended)=\"nexttrack()\" autoplay='true' name='audioplayer'></audio>\r\n</div>\r\n<div>\r\n  <p id='title'>Track: {{song.title}}</p>\r\n  <p id='artist'>Artist: {{song.artist}}</p>\r\n  <p id='album'>Album: {{song.album}}</p>\r\n  <p id='genre'>Genre: {{song.genre}}</p>\r\n  <p id='rating'>Rating: {{song.rating}}</p>\r\n\r\n  <form (ngSubmit)='editsong()'>\r\n    Rating:<input [(ngModel)]=\"song.rating\" type='range' min='0' max='10' style='width:15%;' name='rating'>  \r\n    <input type='submit' value='RATE'>\r\n  </form>\r\n</div>\r\n<div>\r\n  <button (click)=\"nexttrack()\" id='next'>NEXT TRACK</button>  \r\n  <button (click)=\"randomtrack()\" id='next'>Random</button>  \r\n  <button (click)=\"pauseaudio()\" id='pause'>Start/Stop Music</button>\r\n  <button (click)=\"likesong()\" id='pause'>LIKE</button>\r\n  <button (click)=\"dislikesong()\" id='pause'>DISLIKE</button>\r\n\r\n\r\n</div>\r\n<div *ngFor=\"let i of object.keys(alltags)\">\r\n  <h3>{{i}}</h3>\r\n<button *ngFor=\"let h of alltags[i]; let x=index\" style='padding:5px;' (click)=\"switchtag(i,x)\" class='btn btn-outline-primary' [ngClass]=\"{'tagborder': h.songtagged}\" >{{h.name}}</button>\r\n </div>\r\n<form (ngSubmit)='createtag()'>\r\n    <input [(ngModel)]=\"tag.name\" type='text' name='tagname'>  \r\n    <select [(ngModel)]=\"tag.kind\" name='tagkind'>\r\n      <option *ngFor=\"let i of object.keys(alltags)\" value='{{i}}'>{{i}}</option>\r\n    </select>\r\n    <input type='submit' value='ADD {{i}} #TAG'>\r\n  </form>\r\n\r\n<app-playlistcreator></app-playlistcreator>\r\n"
 
 /***/ }),
 
@@ -591,8 +591,9 @@ var StationComponent = /** @class */ (function () {
         this._router = _router;
         this.song = { "id": 3215, "location": "../../music/itunes/itunes media/music\\Dr. Dre\\2001\\11 The Next Episode.m4a", "album": "2001", "rating": 0, "length": "", "mood": "", "title": "The Next Episode", "artist": "Dr. Dre", "albumartist": "", "tracknumber": "", "genre": "Rap", "date": "", "originaldate": "1999", "performer": "", "comment": "", "tags": [] };
         this.station = { "station": { "id": 1, "name": "funky", "description": "testing a radio playlist" }, 'songlist': [], 'song': { "id": 3215, "location": "../../music/itunes/itunes media/music\\Dr. Dre\\2001\\11 The Next Episode.m4a", "album": "2001", "rating": 0, "length": "", "mood": "", "title": "The Next Episode", "artist": "Dr. Dre", "albumartist": "", "tracknumber": "", "genre": "Rap", "date": "", "originaldate": "1999", "performer": "", "comment": "", "tags": [] } };
-        this.tag = { name: '' };
-        this.alltags = [{ 'name': '', 'id': 1, 'songtagged': false }];
+        this.tag = { name: '', kind: '' };
+        this.alltags = { 'genres': [], 'decades': [], 'moods': [], 'styles': [], 'misc': [] };
+        this.object = Object;
     }
     StationComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -620,24 +621,28 @@ var StationComponent = /** @class */ (function () {
     };
     StationComponent.prototype.checktags = function () {
         var thesong = this.song;
-        for (var _i = 0, _a = this.alltags; _i < _a.length; _i++) {
-            var x = _a[_i];
-            if (thesong.tags.includes(x.id)) {
-                x.songtagged = true;
-            }
-            else {
-                x.songtagged = false;
+        var tagtypes = Object.keys(this.alltags);
+        for (var _i = 0, tagtypes_1 = tagtypes; _i < tagtypes_1.length; _i++) {
+            var i = tagtypes_1[_i];
+            for (var _a = 0, _b = this.alltags[i]; _a < _b.length; _a++) {
+                var h = _b[_a];
+                if (thesong.tags.includes(h.id)) {
+                    h.songtagged = true;
+                }
+                else {
+                    h.songtagged = false;
+                }
             }
         }
     };
-    StationComponent.prototype.switchtag = function (x) {
-        if (this.alltags[x].songtagged) {
-            this.alltags[x].songtagged = false;
-            this.songservice.removetag(this.song.id, this.alltags[x].id).subscribe(function (data) { });
+    StationComponent.prototype.switchtag = function (i, x) {
+        if (this.alltags[i][x].songtagged) {
+            this.alltags[i][x].songtagged = false;
+            this.songservice.removetag(this.song.id, this.alltags[i][x].id).subscribe(function (data) { });
         }
         else {
-            this.alltags[x].songtagged = true;
-            this.songservice.addtag(this.song.id, this.alltags[x].id).subscribe(function (data) { });
+            this.alltags[i][x].songtagged = true;
+            this.songservice.addtag(this.song.id, this.alltags[i][x].id).subscribe(function (data) { });
         }
     };
     StationComponent.prototype.likesong = function () {

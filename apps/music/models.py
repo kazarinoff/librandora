@@ -43,7 +43,7 @@ class Song(models.Model):
         return score
     def songdict(self):
         s={'id':self.id,'location':self.location,'album':self.album,'rating':self.rating,'length':self.length,
-        'mood':self.mood,'title':self.title,'artist':self.artist, 'albumartist':self.albumartist, 
+        'title':self.title,'artist':self.artist, 'albumartist':self.albumartist, 
         'tracknumber':self.tracknumber,'genre':self.genre,'date':self.date,
         'originaldate':self.originaldate,'performer':self.performer,'comment':self.comment}
         tagsarr=[]
@@ -71,7 +71,7 @@ class Tag(models.Model):
     relatives= models.ManyToManyField('self', related_name="relatedtags")
 
     def tagdict(self):
-        return {'name':self.name,'id':self.id}
+        return {'name':self.name,'id':self.id,'kind':self.kind}
     def __repr__(self):
         return (f"Tag #{self.id}: {self.name}")
 
@@ -108,40 +108,44 @@ class Station(models.Model):
         s=self.songs.first()        
         return {'station':t,'song':s.songdict()}
 
-    def tscore(self):
-        scoredict={'points':{'genres':{},'albums':{},'artist':{},'tags':''},'minuses':{'genres':{},'albums':{},'artist':{}},'range':{'max':3,'min':-3}}
-        # tags=Tag.objects.filter(songs__stations__id=self.id)
-        songs=self.songs.all()
-        dislikedsongs=self.dislikedsongs.all()
-        gs=self.songs.all().values('genre').annotate(models.Count('genre'))
-        for i in gs:
-            scoredict['points']['genres'][i['genre']]=i['genre__count']
-        dgs=self.dislikedsongs.all().values('genre').annotate(models.Count('genre'))
-        for h in dgs:
-            scoredict['minuses']['genres'][i['genre']]=i['genre__count']
-        albums=self.songs.all().values('album').annotate(models.Count('album'))
-        for i in albums:
-            scoredict['points']['albums'][i['album']]=i['album__count']
-        songtags=Tag.objects.filter(songs__stations__id=self.id).values('name','id')
-        dalbums=self.dislikedsongs.all().values('genre').annotate(models.Count('album'))
-        for h in dalbums:
-            scoredict['minuses']['albums'][i['album']]=i['album__count']
-        artists=self.songs.all().values('artist').annotate(models.Count('artist'))
-        for i in artists:
-            scoredict['points']['artist'][i['artist']]=i['artist__count']
-        dartists=self.dislikedsongs.all().values('artist').annotate(models.Count('artist'))
-        for h in dalbums:
-            scoredict['minuses']['artist'][i['artist']]=i['artist__count']
-        # scoredict['range']['max']=max(scoredict['points']['genres'].values()) + max(scoredict['points']['albums'].values())
-        # scoredict['range']['min']=-1*(max(scoredict['minuses']['genres'].values()) + max(scoredict['minuses']['albums'].values()))
-        return scoredict
+    # def tscore(self):
+    #     scoredict={'points':{'genres':{},'albums':{},'artist':{},'tags':''},'minuses':{'genres':{},'albums':{},'artist':{}},'range':{'max':3,'min':-3}}
+    #     # tags=Tag.objects.filter(songs__stations__id=self.id)
+    #     songs=self.songs.all()
+    #     dislikedsongs=self.dislikedsongs.all()
+    #     gs=self.songs.all().values('genre').annotate(models.Count('genre'))
+    #     for i in gs:
+    #         scoredict['points']['genres'][i['genre']]=i['genre__count']
+    #     dgs=self.dislikedsongs.all().values('genre').annotate(models.Count('genre'))
+    #     for h in dgs:
+    #         scoredict['minuses']['genres'][i['genre']]=i['genre__count']
+    #     albums=self.songs.all().values('album').annotate(models.Count('album'))
+    #     for i in albums:
+    #         scoredict['points']['albums'][i['album']]=i['album__count']
+    #     songtags=Tag.objects.filter(songs__stations__id=self.id).values('name','id')
+    #     dalbums=self.dislikedsongs.all().values('genre').annotate(models.Count('album'))
+    #     for h in dalbums:
+    #         scoredict['minuses']['albums'][i['album']]=i['album__count']
+    #     artists=self.songs.all().values('artist').annotate(models.Count('artist'))
+    #     for i in artists:
+    #         scoredict['points']['artist'][i['artist']]=i['artist__count']
+    #     dartists=self.dislikedsongs.all().values('artist').annotate(models.Count('artist'))
+    #     for h in dalbums:
+    #         scoredict['minuses']['artist'][i['artist']]=i['artist__count']
+    #     # scoredict['range']['max']=max(scoredict['points']['genres'].values()) + max(scoredict['points']['albums'].values())
+    #     # scoredict['range']['min']=-1*(max(scoredict['minuses']['genres'].values()) + max(scoredict['minuses']['albums'].values()))
+    #     return scoredict
 
-    def tscore2(self):
-        tagsfor=Tag.objects.filter(songs__stations__id=self.id)
-        scoredict={'points':[],'minuses':""}
+    def tscore(self):
+        tagsfor=Tag.objects.filter(songs__stations__id=self.id).values('id')
+        tagsagainst=Tag.objects.filter(songs__forbiddenstations__id=self.id).values('id')
+        scoredict={'points':[],'minuses':[],'range':{'tagnumber':0}}
         for tag in tagsfor:
-            scoredict['points'].append(tag)
-        return 0
+            scoredict['points'].append(tag['id'])
+        for tag in tagsagainst:
+            scoredict['minuses'].append(tag['id'])
+        scoredict['range']['tagnumber']=len(scoredict['points'])
+        return scoredict
 class Listing(models.Model):
     song=models.ForeignKey(Song, on_delete=models.CASCADE)
     playlist=models.ForeignKey(Playlist, on_delete=models.CASCADE)
