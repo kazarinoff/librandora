@@ -47,4 +47,7 @@ export class SongService {
   indexgenre(){
     return this._http.get('/api/genre/all')
   }
+  createplaylist(edits){
+    return this._http.post('/api/playlist/new',edits)
+  }
 }

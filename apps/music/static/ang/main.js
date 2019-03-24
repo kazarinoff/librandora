@@ -314,7 +314,7 @@ module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<h2>New Playlist</h2>\n  <!-- <form (ngSubmit)='createplaylist()'>\n    <input [(ngModel)]=\"creation.name\" name='name'>\n    <select  multiple name='genre'>\n      <option *ngFor=\"let g in genres\">{{g}}</option>\n      </select>\n      <select  multiple name='tag'>\n          <option>tags</option>\n          </select>\n    <textarea [(ngModel)]=\"creation.description\" name='description'>\n\n        <input type='submit' value='NEW Playlist' name='submit'>\n  </form> -->"
+module.exports = "<h2>New Playlist</h2>\n  <form (ngSubmit)=\"createplaylist()\">\n    Name: <input [(ngModel)]=\"creation.name\" name='name' type=text>\n    <select  [(ngModel)]=\"creation.genres\" multiple name='genre'>\n      <option *ngFor=\"let g of genres\" value=\"{{g.genre}}\">{{g.genre}}</option>\n      </select>\n      <select  [(ngModel)]=\"creation.tags\" multiple name='tag'>\n          <option *ngFor=\"let t of tags\" value=\"{{t.id}}\">{{t.name}}</option>\n          </select>\n    <textarea [(ngModel)]=\"creation.description\" name='description'>Description</textarea>\n\n        <input type='submit' value='New Playlist' name='submit'>\n  </form>"
 
 /***/ }),
 
@@ -341,7 +341,6 @@ var PlaylistcreatorComponent = /** @class */ (function () {
         this.songservice = songservice;
         this._route = _route;
         this._router = _router;
-        this.genres = [];
         this.tags = [];
         this.creation = { "genres": [], "tags": [], 'name': '', 'description': '' };
     }
@@ -355,10 +354,24 @@ var PlaylistcreatorComponent = /** @class */ (function () {
     };
     PlaylistcreatorComponent.prototype.tagsindex = function () {
         var _this = this;
-        this.songservice.indextag().subscribe(function (data) { _this.tags = data; });
+        var tags = this.tags;
+        this.songservice.indextag().subscribe(function (data) {
+            var tagkeys = Object.keys(data);
+            for (var _i = 0, tagkeys_1 = tagkeys; _i < tagkeys_1.length; _i++) {
+                var k = tagkeys_1[_i];
+                for (var _a = 0, _b = data[k]; _a < _b.length; _a++) {
+                    var item = _b[_a];
+                    tags.push(item);
+                }
+            }
+            ;
+            _this.tags = tags;
+        });
     };
     PlaylistcreatorComponent.prototype.createplaylist = function () {
-        this.songservice;
+        console.log(this.creation);
+        this.songservice.createplaylist(this.creation).subscribe(function (data) { console.log(data); });
+        this.creation = { "genres": [], "tags": [], 'name': '', 'description': '' };
     };
     PlaylistcreatorComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
@@ -530,6 +543,9 @@ var SongService = /** @class */ (function () {
     };
     SongService.prototype.indexgenre = function () {
         return this._http.get('/api/genre/all');
+    };
+    SongService.prototype.createplaylist = function (edits) {
+        return this._http.post('/api/playlist/new', edits);
     };
     SongService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({

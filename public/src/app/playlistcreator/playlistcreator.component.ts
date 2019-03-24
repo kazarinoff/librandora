@@ -8,7 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./playlistcreator.component.css']
 })
 export class PlaylistcreatorComponent implements OnInit {
-  genres=[]
+  genres:any;
   tags=[]
   creation={"genres":[],"tags":[],'name':'','description':''}
   constructor(private songservice:SongService, private _route:ActivatedRoute, private _router:Router){}
@@ -21,9 +21,20 @@ export class PlaylistcreatorComponent implements OnInit {
     this.songservice.indexgenre().subscribe((data:any)=>{this.genres=data})
   }
   tagsindex(){
-    this.songservice.indextag().subscribe((data:any)=>{this.tags=data})
+    var tags = this.tags;
+    this.songservice.indextag().subscribe((data:any)=>{
+      var tagkeys=Object.keys(data);
+      for (var k of tagkeys){
+        for (var item of data[k]){
+          tags.push(item)
+        }
+      };
+      this.tags=tags;
+    })
   }
   createplaylist(){
-    this.songservice
+    console.log(this.creation);
+    this.songservice.createplaylist(this.creation).subscribe((data:any)=>{console.log(data)});
+    this.creation={"genres":[],"tags":[],'name':'','description':''}
   }
 }

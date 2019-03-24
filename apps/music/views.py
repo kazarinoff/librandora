@@ -137,11 +137,20 @@ def playlistcreate(request):
     edits=json.loads(request.body)
     try:
         pl=Playlist.objects.create(name=edits['name'],description=edits['description'])
-        s=Song.objects.filter(genre=edits['genre'][0])
-        tags=Tag.objects.filter(id=edits[''])
+    except:
+        return JsonResponse({'msg':'could not create playlist'}, safe=False)
+    try:
+        for g in edits['genres']:
+            songs=Song.objects.filter(genre=g)
+            for s in songs:
+                Listing.objects.create(playlist=pl,song=s)
+        for t in edits['tags']:
+            songs=Tag.objects.get(id=int(t)).songs.all()
+            for s in songs:
+                Listing.objects.create(playlist=pl,song=s)
     except:
         pass
-    return True
+    return JsonResponse(pl.pldict(), safe=False)
 
 def stationcreate(request):
     pass

@@ -1,13 +1,13 @@
 <h2>New Playlist</h2>
-  <!-- <form (ngSubmit)='createplaylist()'>
-    <input [(ngModel)]="creation.name" name='name'>
-    <select  multiple name='genre'>
-      <option *ngFor="let g in genres">{{g}}</option>
+  <form (ngSubmit)="createplaylist()">
+    Name: <input [(ngModel)]="creation.name" name='name' type=text>
+    <select  [(ngModel)]="creation.genres" multiple name='genre'>
+      <option *ngFor="let g of genres" value="{{g.genre}}">{{g.genre}}</option>
       </select>
-      <select  multiple name='tag'>
-          <option>tags</option>
+      <select  [(ngModel)]="creation.tags" multiple name='tag'>
+          <option *ngFor="let t of tags" value="{{t.id}}">{{t.name}}</option>
           </select>
-    <textarea [(ngModel)]="creation.description" name='description'>
+    <textarea [(ngModel)]="creation.description" name='description'>Description</textarea>
 
-        <input type='submit' value='NEW Playlist' name='submit'>
-  </form> -->
+        <input type='submit' value='New Playlist' name='submit'>
+  </form>
