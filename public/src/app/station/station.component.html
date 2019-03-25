@@ -1,5 +1,5 @@
 <div class='row'>
-<div class='col-6'>
+<div class='col-4'>
   <h2 *ngIf="pagetype=='station'">Station: {{station.station.name}}</h2>
   <h2 *ngIf="pagetype=='playlist'">Playlist: {{playlist.playlist.name}}</h2>
   <h2 *ngIf="pagetype=='radio'">Radio Library Shuffle</h2>
@@ -7,7 +7,7 @@
   <div>
     <audio  controls #radioplayer [src]="song.location" (ended)="nexttrack()" autoplay='true' name='audioplayer'></audio>
   </div>
-  <button *ngIf="pagetype=='station' || 'playlist'" style='margin:5px;' class='btn-secondary' (click)="nexttrack()" id='next'>Next Track</button>  
+  <button *ngIf="pagetype=='station' || pagetype=='playlist'" style='margin:5px;' class='btn-secondary' (click)="nexttrack()" id='next'>Next Track</button>  
   <button style='margin:5px;' class='btn-secondary' (click)="randomtrack()" id='next'>Random</button> 
   <!-- <button class='btn-secondary' (click)="pauseaudio()" id='pause'>Start/Stop Music</button> -->
   <button *ngIf="pagetype=='station'" style='margin:5px;' class='btn-info' (click)="likesong()" id='pause'>LIKE</button>
@@ -24,7 +24,7 @@
     </form>
   </div>
 </div>
-<div class='col-6'>
+<div class='col-8'>
 <app-tagdisplay [song]="song"></app-tagdisplay>
 </div>
 </div>

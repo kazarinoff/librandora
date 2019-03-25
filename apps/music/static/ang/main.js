@@ -286,7 +286,7 @@ module.exports = ".tagborder {\r\n    border: 1pt solid black;\r\n    background
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class='row'>\r\n<div class='col-6'>\r\n  <h2 *ngIf=\"pagetype=='station'\">Station: {{station.station.name}}</h2>\r\n  <h2 *ngIf=\"pagetype=='playlist'\">Playlist: {{playlist.playlist.name}}</h2>\r\n  <h2 *ngIf=\"pagetype=='radio'\">Radio Library Shuffle</h2>\r\n\r\n  <div>\r\n    <audio  controls #radioplayer [src]=\"song.location\" (ended)=\"nexttrack()\" autoplay='true' name='audioplayer'></audio>\r\n  </div>\r\n  <button *ngIf=\"pagetype=='station' || 'playlist'\" style='margin:5px;' class='btn-secondary' (click)=\"nexttrack()\" id='next'>Next Track</button>  \r\n  <button style='margin:5px;' class='btn-secondary' (click)=\"randomtrack()\" id='next'>Random</button> \r\n  <!-- <button class='btn-secondary' (click)=\"pauseaudio()\" id='pause'>Start/Stop Music</button> -->\r\n  <button *ngIf=\"pagetype=='station'\" style='margin:5px;' class='btn-info' (click)=\"likesong()\" id='pause'>LIKE</button>\r\n  <button *ngIf=\"pagetype=='station'\" style='margin:5px;' class='btn-danger' (click)=\"dislikesong()\" id='pause'>DISLIKE</button>\r\n  <button *ngIf=\"pagetype=='playlist'\" style='margin:5px;' class='btn-danger' (click)=\"removesong()\" id='pause'>Remove</button>\r\n  <div>\r\n    <p id='title'>Title: {{song.title}}</p>\r\n    <p id='artist'>Artist: {{song.artist}}</p>\r\n    <p id='album'>Album: {{song.album}}</p>\r\n    <p id='rating'>Rating: <span *ngIf=\"!song.rating\">Not yet rated</span>{{song.rating}}</p>\r\n    <form (ngSubmit)='editsong()'>\r\n      Rating:<input [(ngModel)]=\"song.rating\" type='range' min='0' max='10' style='width:30%;' name='rating'>  \r\n      <input class='btn-secondary' type='submit' value='RATE'>\r\n    </form>\r\n  </div>\r\n</div>\r\n<div class='col-6'>\r\n<app-tagdisplay [song]=\"song\"></app-tagdisplay>\r\n</div>\r\n</div>\r\n<!-- <app-playlistcreator></app-playlistcreator> -->\r\n"
+module.exports = "<div class='row'>\r\n<div class='col-4'>\r\n  <h2 *ngIf=\"pagetype=='station'\">Station: {{station.station.name}}</h2>\r\n  <h2 *ngIf=\"pagetype=='playlist'\">Playlist: {{playlist.playlist.name}}</h2>\r\n  <h2 *ngIf=\"pagetype=='radio'\">Radio Library Shuffle</h2>\r\n\r\n  <div>\r\n    <audio  controls #radioplayer [src]=\"song.location\" (ended)=\"nexttrack()\" autoplay='true' name='audioplayer'></audio>\r\n  </div>\r\n  <button *ngIf=\"pagetype=='station' || pagetype=='playlist'\" style='margin:5px;' class='btn-secondary' (click)=\"nexttrack()\" id='next'>Next Track</button>  \r\n  <button style='margin:5px;' class='btn-secondary' (click)=\"randomtrack()\" id='next'>Random</button> \r\n  <!-- <button class='btn-secondary' (click)=\"pauseaudio()\" id='pause'>Start/Stop Music</button> -->\r\n  <button *ngIf=\"pagetype=='station'\" style='margin:5px;' class='btn-info' (click)=\"likesong()\" id='pause'>LIKE</button>\r\n  <button *ngIf=\"pagetype=='station'\" style='margin:5px;' class='btn-danger' (click)=\"dislikesong()\" id='pause'>DISLIKE</button>\r\n  <button *ngIf=\"pagetype=='playlist'\" style='margin:5px;' class='btn-danger' (click)=\"removesong()\" id='pause'>Remove</button>\r\n  <div>\r\n    <p id='title'>Title: {{song.title}}</p>\r\n    <p id='artist'>Artist: {{song.artist}}</p>\r\n    <p id='album'>Album: {{song.album}}</p>\r\n    <p id='rating'>Rating: <span *ngIf=\"!song.rating\">Not yet rated</span>{{song.rating}}</p>\r\n    <form (ngSubmit)='editsong()'>\r\n      Rating:<input [(ngModel)]=\"song.rating\" type='range' min='0' max='10' style='width:30%;' name='rating'>  \r\n      <input class='btn-secondary' type='submit' value='RATE'>\r\n    </form>\r\n  </div>\r\n</div>\r\n<div class='col-8'>\r\n<app-tagdisplay [song]=\"song\"></app-tagdisplay>\r\n</div>\r\n</div>\r\n<!-- <app-playlistcreator></app-playlistcreator> -->\r\n"
 
 /***/ }),
 
@@ -323,28 +323,13 @@ var StationComponent = /** @class */ (function () {
     StationComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.pagetype = this._route.routeConfig.path.split("/", 1)[0];
-        if (this.pagetype == 'station') {
-            this._route.params.subscribe(function (params) {
-                _this.songservice.stationshow(params.tid).subscribe(function (data) {
-                    if (data) {
-                        _this.station = data;
-                        _this.song = _this.station.song;
-                        _this.startaudio();
-                    }
-                    else {
-                        _this.pagetype = 'radio';
-                        _this.randomtrack();
-                    }
-                });
-            });
-        }
-        else if (this.pagetype == 'playlist') {
-            this._route.params.subscribe(function (params) {
-                _this.songservice.playlistshow(params.pid).subscribe(function (data) {
-                    _this.playlist = data;
-                    _this.songservice.songshow(_this.playlist.songlist[0]).subscribe(function (data) {
+        switch (this.pagetype) {
+            case 'station': {
+                this._route.params.subscribe(function (params) {
+                    _this.songservice.stationshow(params.tid).subscribe(function (data) {
                         if (data) {
-                            _this.song = data;
+                            _this.station = data;
+                            _this.song = _this.station.song;
                             _this.startaudio();
                         }
                         else {
@@ -353,11 +338,31 @@ var StationComponent = /** @class */ (function () {
                         }
                     });
                 });
-            });
-        }
-        else {
-            this.pagetype = 'radio';
-            this.randomtrack();
+                break;
+            }
+            case 'playlist': {
+                this._route.params.subscribe(function (params) {
+                    _this.songservice.playlistshow(params.pid).subscribe(function (data) {
+                        if (data) {
+                            _this.playlist = data;
+                            _this.songservice.songshow(_this.playlist.songlist[0]).subscribe(function (data) {
+                                _this.song = data;
+                                _this.startaudio();
+                            });
+                        }
+                        else {
+                            _this.pagetype = 'radio';
+                            _this.randomtrack();
+                        }
+                    });
+                });
+                break;
+            }
+            default: {
+                this.pagetype = 'radio';
+                this.randomtrack();
+                break;
+            }
         }
     };
     StationComponent.prototype.pauseaudio = function () {
@@ -399,21 +404,26 @@ var StationComponent = /** @class */ (function () {
         console.log(this.pagetype);
         var radio = this.radioplayer.nativeElement;
         radio.pause();
-        if (this.pagetype == 'station') {
-            this.songservice.stationnext(this.station.station.id).subscribe(function (data) { _this.song = data; radio.play(); });
-        }
-        else if (this.pagetype == 'playlist') {
-            if ((this.songindex + 1) >= (this.playlist.songlist.length)) {
-                this.songindex = 0;
+        switch (this.pagetype) {
+            case "station": {
+                this.songservice.stationnext(this.station.station.id).subscribe(function (data) { _this.song = data; radio.play(); });
+                break;
             }
-            else {
-                this.songindex++;
+            case 'playlist': {
+                if ((this.songindex + 1) >= (this.playlist.songlist.length)) {
+                    this.songindex = 0;
+                }
+                else {
+                    this.songindex++;
+                }
+                ;
+                this.songservice.songshow(this.playlist.songlist[this.songindex]).subscribe(function (data) { _this.song = data; radio.play(); });
+                break;
             }
-            ;
-            this.songservice.songshow(this.playlist.songlist[this.songindex]).subscribe(function (data) { _this.song = data; radio.play(); });
-        }
-        else {
-            this.randomtrack();
+            default: {
+                this.randomtrack();
+                break;
+            }
         }
     };
     tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([

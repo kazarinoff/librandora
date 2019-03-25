@@ -17,34 +17,38 @@ export class StationComponent implements OnInit {
   constructor(private songservice:SongService, private _route:ActivatedRoute, private _router:Router){}
   object=Object
   ngOnInit(){
-    this.pagetype=this._route.routeConfig.path.split("/",1)[0]
-    if (this.pagetype=='station'){
-      this._route.params.subscribe((params:Params)=> {
-        this.songservice.stationshow(params.tid).subscribe((data: any)=>{
-          if (data){
-            this.station=data;
-            this.song=this.station.song;
-            this.startaudio();
-          }
-          else {this.pagetype='radio';this.randomtrack()}
-        })
-      });
-    }
-    else if (this.pagetype=='playlist'){
-      this._route.params.subscribe((params:Params)=> {
-        this.songservice.playlistshow(params.pid).subscribe((data: any)=>{
-          this.playlist=data;
-          this.songservice.songshow(this.playlist.songlist[0]).subscribe((data:any)=>{
+    this.pagetype=this._route.routeConfig.path.split("/",1)[0];
+    switch (this.pagetype){
+      case 'station': {
+        this._route.params.subscribe((params:Params)=> {
+          this.songservice.stationshow(params.tid).subscribe((data: any)=>{
             if (data){
-              this.song=data;
+              this.station=data;
+              this.song=this.station.song;
               this.startaudio();
             }
             else {this.pagetype='radio';this.randomtrack()}
           })
         });
-      })
+        break;
+      }
+      case 'playlist':{
+        this._route.params.subscribe((params:Params)=> {
+          this.songservice.playlistshow(params.pid).subscribe((data: any)=>{
+            if (data){
+            this.playlist=data;
+            this.songservice.songshow(this.playlist.songlist[0]).subscribe((data:any)=>{
+              this.song=data;
+              this.startaudio();
+              })
+            } 
+            else {this.pagetype='radio';this.randomtrack()}
+          })
+        })
+        break;
+      }
+      default: {this.pagetype='radio'; this.randomtrack();break;}
     }
-    else {this.pagetype='radio'; this.randomtrack()}  
   }
   @ViewChild('radioplayer') radioplayer: ElementRef;
 
@@ -81,15 +85,18 @@ export class StationComponent implements OnInit {
     console.log(this.pagetype)
     let radio: HTMLAudioElement = this.radioplayer.nativeElement as HTMLAudioElement;
     radio.pause();
-    if (this.pagetype=='station'){
-      this.songservice.stationnext(this.station.station.id).subscribe((data:any)=>{this.song=data;radio.play()})
+    switch(this.pagetype){
+      case "station": {
+        this.songservice.stationnext(this.station.station.id).subscribe((data:any)=>{this.song=data;radio.play()})
+        break;
+      }
+      case 'playlist':{
+        if ((this.songindex+1) >= (this.playlist.songlist.length)){this.songindex=0;}
+        else {this.songindex ++};
+        this.songservice.songshow(this.playlist.songlist[this.songindex]).subscribe((data:any)=>{this.song=data; radio.play()});
+        break;
+      }
+      default: {this.randomtrack();break;}
     }
-    else if (this.pagetype=='playlist'){
-      if ((this.songindex+1) >= (this.playlist.songlist.length)){this.songindex=0;}
-      else {this.songindex ++};
-      this.songservice.songshow(this.playlist.songlist[this.songindex]).subscribe((data:any)=>{this.song=data; radio.play()});
-
-    }
-    else {this.randomtrack()}
   }
 }
