@@ -50,7 +50,9 @@ def removetag(request,sid,tgid):
 
 def randomsong(request):
     try:
-        song=random.choice(Song.objects.all())
+        rn=Song.objects.last().id
+        n=random.randint(1,rn)
+        song=Song.objects.get(id=n)
         return JsonResponse(song.songdict(), safe=False)
     except:
         return JsonResponse({}, safe=False)
