@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SongService } from '../song.service';
+import { SongService } from '../../song.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({

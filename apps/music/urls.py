@@ -8,6 +8,7 @@ urlpatterns = [
     path('randomsong',views.randomsong, name='randomsong'),
     path('playlist/new',views.playlistcreate,name='createpl'),
     path('playlist/all',views.playlistindex,name='indexpl'),
+    path('playlist/<pid>/removesong/<sid>',views.removesong,name='removesong'),
     path('playlist/<pid>',views.playlistshow,name='showpl'),
     path('song/<sid>/createtag',views.createtag,name='createtag'),
     path('song/<sid>/remove/<tgid>',views.removetag,name='removetag'),

@@ -5,18 +5,16 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { SongService } from './song.service';
-import { PlaylistComponent } from './playlist/playlist.component';
-import { RadioComponent } from './radio/radio.component';
 import { StationComponent } from './station/station.component';
-import { PlaylistcreatorComponent } from './playlistcreator/playlistcreator.component';
+import { PlaylistcreatorComponent } from './subcomponents/playlistcreator/playlistcreator.component';
+import { TagdisplayComponent } from './subcomponents/tagdisplay/tagdisplay.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    PlaylistComponent,
-    RadioComponent,
     StationComponent,
     PlaylistcreatorComponent,
+    TagdisplayComponent,
   ],
   imports: [
     BrowserModule,

@@ -50,4 +50,7 @@ export class SongService {
   createplaylist(edits){
     return this._http.post('/api/playlist/new',edits)
   }
+  removesong(pid,sid){
+    return this._http.get('/api/playlist/'+pid+'/removesong/'+sid)
+  }
 }

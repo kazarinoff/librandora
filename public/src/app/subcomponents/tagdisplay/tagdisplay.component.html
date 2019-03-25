@@ -1,0 +1,13 @@
+<h3>#TAGS</h3>
+<div style='text-align:center;' *ngFor="let i of object.keys(alltags); let y=index">
+  <h5>{{i}}</h5>
+  <button *ngFor="let h of alltags[i]; let x=index" style='margin:5px;' (click)="switchtag(i,x)" class='btn btn-outline-secondary btn-small' [class.btn-outline-info]="(y%2==0)" [class.btn-warning]="h.songtagged" >{{h.name}}</button>
+</div>
+<form (ngSubmit)='createtag()'>
+  <input [(ngModel)]="tag.name" type='text' name='tagname'>  
+  <select [(ngModel)]="tag.kind" name='tagkind'>
+    <option *ngFor="let i of object.keys(alltags)" value='{{i}}'>{{i}}</option>
+  </select>
+  <input type='submit' value='#TAG'>
+</form>
+

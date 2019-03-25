@@ -87,14 +87,14 @@ def playlistshow(request,pid):
     try:
         pl=Playlist.objects.get(id=pid)
     except:
-        return JsonResponse({}, safe=False)
+        return JsonResponse(False, safe=False)
     return JsonResponse(pl.pldict(), safe=False)
 
 def stationshow(request,tid):
     try:
         t=Station.objects.get(id=tid)
     except:
-        return JsonResponse({}, safe=False)
+        return JsonResponse(False, safe=False)
     return JsonResponse(t.tdict(), safe=False)
 
 def likesong(request,sid,tid):
@@ -127,6 +127,15 @@ def dislikesong(request,sid,tid):
     except:
         return JsonResponse({}, safe=False)
     return JsonResponse(s.songdict(), safe=False)
+
+def removesong(request,sid,pid):
+    try:
+        p=Playlist.objects.get(id=pid)
+        s=Song.objects.get(id=sid)
+        Listing.objects.get(playlist=p,song=s).delete()
+    except:
+        return JsonResponse({}, safe=False)
+    return JsonResponse(p.pldict(), safe=False)
 
 def playlistindex(request):
     p=Playlist.objects.all().values('id','name')
