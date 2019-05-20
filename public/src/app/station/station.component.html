@@ -1,9 +1,10 @@
 <div class='row'>
 <div class='col-4'>
-  <h2 *ngIf="pagetype=='station'">Station: {{station.station.name}}</h2>
-  <h2 *ngIf="pagetype=='playlist'">Playlist: {{playlist.playlist.name}}</h2>
-  <h2 *ngIf="pagetype=='radio'">Radio Library Shuffle</h2>
-
+  <div [ngSwitch]="pagetype">
+    <h2 *ngSwitchCase="station">Station: {{station.station.name}}</h2>
+    <h2 *ngSwitchCase="playlist">Playlist: {{playlist.playlist.name}}</h2>
+    <h2 **ngSwitchCase="radio">Radio Library Shuffle</h2>
+  </div>
   <div>
     <audio  controls #radioplayer [src]="song.location" (ended)="nexttrack()" autoplay='true' name='audioplayer'></audio>
   </div>

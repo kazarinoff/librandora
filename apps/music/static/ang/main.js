@@ -82,7 +82,7 @@ module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<body style='margin:5pt'>\n<h1>LIBRANDORA</h1>\n\n\n<router-outlet></router-outlet>\n</body>\n\n\n"
+module.exports = "<body style='margin:5pt'>\n<h1>LIBRANDORA</h1>\n\n<router-outlet></router-outlet>\n</body>\n\n\n"
 
 /***/ }),
 

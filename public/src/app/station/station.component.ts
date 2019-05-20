@@ -82,7 +82,6 @@ export class StationComponent implements OnInit {
     this.songservice.randomsong().subscribe((data:any)=>{this.song=data; radio.play()});
   }
   nexttrack(){
-    console.log(this.pagetype)
     let radio: HTMLAudioElement = this.radioplayer.nativeElement as HTMLAudioElement;
     radio.pause();
     switch(this.pagetype){
